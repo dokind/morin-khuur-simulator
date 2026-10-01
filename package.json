@@ -17,6 +17,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "icons": "node scripts/generate-icons.mjs",
+    "render": "node scripts/render-song.mjs",
     "dist": "npm run build && electron-builder",
     "dist:win": "npm run build && electron-builder --win"
   },
