@@ -1,0 +1,27 @@
+{
+  "title": "Etude 2 · First-Position Scale",
+  "composer": "Morin Khuur Simulator contributors",
+  "description": "F3 up to F4 and back across both strings with side-stopping fingers 1–4 and alternating bows.",
+  "source": "Original exercise written for this project — not a traditional melody.",
+  "tuning": { "maleString": "F3", "femaleString": "Bb3" },
+  "key": "Bb",
+  "tempoBpm": 84,
+  "timeSignature": "4/4",
+  "notes": [
+    { "time": "0:0:0", "pitch": "F3", "duration": "4n", "string": "male", "technique": "open", "finger": null, "bow": "tatakh" },
+    { "time": "0:1:0", "pitch": "G3", "duration": "4n", "string": "male", "technique": "cuticle_side_stop", "finger": "index", "bow": "tülekhe" },
+    { "time": "0:2:0", "pitch": "A3", "duration": "4n", "string": "male", "technique": "cuticle_side_stop", "finger": "middle", "bow": "tatakh" },
+    { "time": "0:3:0", "pitch": "Bb3", "duration": "4n", "string": "female", "technique": "open", "finger": null, "bow": "tülekhe" },
+    { "time": "1:0:0", "pitch": "C4", "duration": "4n", "string": "female", "technique": "cuticle_side_stop", "finger": "index", "bow": "tatakh" },
+    { "time": "1:1:0", "pitch": "D4", "duration": "4n", "string": "female", "technique": "cuticle_side_stop", "finger": "middle", "bow": "tülekhe" },
+    { "time": "1:2:0", "pitch": "Eb4", "duration": "4n", "string": "female", "technique": "cuticle_side_stop", "finger": "ring", "bow": "tatakh" },
+    { "time": "1:3:0", "pitch": "F4", "duration": "4n", "string": "female", "technique": "cuticle_side_stop", "finger": "pinky", "bow": "tülekhe" },
+    { "time": "2:0:0", "pitch": "Eb4", "duration": "4n", "string": "female", "technique": "cuticle_side_stop", "finger": "ring", "bow": "tatakh" },
+    { "time": "2:1:0", "pitch": "D4", "duration": "4n", "string": "female", "technique": "cuticle_side_stop", "finger": "middle", "bow": "tülekhe" },
+    { "time": "2:2:0", "pitch": "C4", "duration": "4n", "string": "female", "technique": "cuticle_side_stop", "finger": "index", "bow": "tatakh" },
+    { "time": "2:3:0", "pitch": "Bb3", "duration": "4n", "string": "female", "technique": "open", "finger": null, "bow": "tülekhe" },
+    { "time": "3:0:0", "pitch": "A3", "duration": "4n", "string": "male", "technique": "cuticle_side_stop", "finger": "middle", "bow": "tatakh" },
+    { "time": "3:1:0", "pitch": "G3", "duration": "4n", "string": "male", "technique": "cuticle_side_stop", "finger": "index", "bow": "tülekhe" },
+    { "time": "3:2:0", "pitch": "F3", "duration": "2n", "string": "male", "technique": "open", "finger": null, "bow": "tatakh" }
+  ]
+}

@@ -1,0 +1,50 @@
+appId: mn.morinkhuur.simulator
+productName: Morin Khuur Simulator
+copyright: Copyright © 2026 Morin Khuur Simulator contributors
+directories:
+  buildResources: build
+  output: dist
+# Everything the app needs is bundled by electron-vite into out/.
+# Renderer libraries live in devDependencies, so no node_modules are shipped.
+files:
+  - out/**/*
+  - package.json
+  - '!**/*.map'
+extraMetadata:
+  main: out/main/index.js
+
+win:
+  executableName: MorinKhuurSimulator
+  icon: build/icon.ico
+  target:
+    - target: nsis
+      arch: [x64, arm64]
+    - target: portable
+      arch: [x64]
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: always
+  createStartMenuShortcut: true
+  shortcutName: Morin Khuur Simulator
+  uninstallDisplayName: Morin Khuur Simulator
+  artifactName: MorinKhuurSimulator-Setup-${version}-${arch}.${ext}
+  deleteAppDataOnUninstall: false
+portable:
+  artifactName: MorinKhuurSimulator-Portable-${version}.${ext}
+
+mac:
+  icon: build/icon.png
+  category: public.app-category.music
+  target: [dmg]
+  artifactName: MorinKhuurSimulator-${version}-${arch}.${ext}
+
+linux:
+  icon: build/icon.png
+  category: Audio
+  target: [AppImage, deb]
+  maintainer: Morin Khuur Simulator contributors
+  artifactName: MorinKhuurSimulator-${version}-${arch}.${ext}
+
+publish: null

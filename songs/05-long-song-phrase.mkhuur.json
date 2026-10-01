@@ -1,0 +1,24 @@
+{
+  "title": "Etude 5 · Long-Song Phrase",
+  "composer": "Morin Khuur Simulator contributors",
+  "genre": "Urtiin Duu (style study)",
+  "description": "A slow pentatonic phrase in the spirit of urtiin duu: vibrato, a fingernail glissando, slurs and a closing drone.",
+  "source": "Original exercise written for this project — not a traditional melody.",
+  "tuning": { "maleString": "F3", "femaleString": "Bb3" },
+  "key": "Bb",
+  "tempoBpm": 56,
+  "timeSignature": "4/4",
+  "notes": [
+    { "time": "0:0:0", "pitch": "F4", "duration": "2n", "string": "female", "technique": "cuticle_side_stop", "finger": "pinky", "bow": "tatakh", "articulations": ["vibrato"] },
+    { "time": "0:2:0", "pitch": "G4", "duration": "4n", "string": "female", "technique": "cuticle_side_stop", "finger": "ring", "bow": "tülekhe" },
+    { "time": "0:3:0", "pitch": "F4", "duration": "4n", "string": "female", "technique": "cuticle_side_stop", "finger": "pinky", "bow": "tülekhe", "slur": true, "ornament": "trill" },
+    { "time": "1:0:0", "pitch": "D4", "duration": "2n.", "string": "female", "technique": "gulsuulakh_glissando", "finger": "middle", "bow": "tatakh", "glideTo": "C4" },
+    { "time": "1:3:0", "pitch": "C4", "duration": "4n", "string": "female", "technique": "cuticle_side_stop", "finger": "index", "bow": "tülekhe" },
+    { "time": "2:0:0", "pitch": "D4", "duration": "4n", "string": "female", "technique": "cuticle_side_stop", "finger": "middle", "bow": "tatakh" },
+    { "time": "2:1:0", "pitch": "F4", "duration": "4n", "string": "female", "technique": "cuticle_side_stop", "finger": "pinky", "bow": "tülekhe" },
+    { "time": "2:2:0", "pitch": "G4", "duration": "8n", "string": "female", "technique": "cuticle_side_stop", "finger": "ring", "bow": "tatakh" },
+    { "time": "2:2:2", "pitch": "F4", "duration": "8n", "string": "female", "technique": "cuticle_side_stop", "finger": "pinky", "bow": "tülekhe" },
+    { "time": "2:3:0", "pitch": "D4", "duration": "4n", "string": "female", "technique": "vibrato", "finger": "middle", "bow": "tatakh" },
+    { "time": "3:0:0", "pitch": "Bb3", "duration": "1n", "string": "female", "technique": "double_stop", "finger": null, "bow": "tülekhe", "drone": "F3" }
+  ]
+}

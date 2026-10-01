@@ -1,0 +1,8 @@
+export * from './types'
+export { planPerformance, resolveStyle, STYLES } from './plan'
+export { performedTiming } from './plan'
+export { resolveLevel } from './style'
+export { songClock, type SongClock } from './tempo'
+export { neighbour, pitchContext, type PitchContext } from './phrases'
+export { vibratoSegments, type VibratoSegment } from './ornaments'
+export { ORNAMENT_TIMING } from './presets'

@@ -1,0 +1,21 @@
+{
+  "title": "Etude 1 · Open Strings (Arga & Bilag)",
+  "composer": "Morin Khuur Simulator contributors",
+  "description": "Long bows on the open male and female strings, finishing with a double-stop drone in wavy (multiple-accent) bowing.",
+  "source": "Original exercise written for this project — not a traditional melody.",
+  "tuning": { "maleString": "F3", "femaleString": "Bb3" },
+  "key": "Bb",
+  "tempoBpm": 72,
+  "timeSignature": "4/4",
+  "notes": [
+    { "time": "0:0:0", "pitch": "F3", "duration": "2n", "string": "male", "technique": "open", "finger": null, "bow": "tatakh" },
+    { "time": "0:2:0", "pitch": "F3", "duration": "2n", "string": "male", "technique": "open", "finger": null, "bow": "tülekhe" },
+    { "time": "1:0:0", "pitch": "Bb3", "duration": "2n", "string": "female", "technique": "open", "finger": null, "bow": "tatakh" },
+    { "time": "1:2:0", "pitch": "Bb3", "duration": "2n", "string": "female", "technique": "open", "finger": null, "bow": "tülekhe" },
+    { "time": "2:0:0", "pitch": "F3", "duration": "4n", "string": "male", "technique": "open", "finger": null, "bow": "tatakh" },
+    { "time": "2:1:0", "pitch": "Bb3", "duration": "4n", "string": "female", "technique": "open", "finger": null, "bow": "tülekhe" },
+    { "time": "2:2:0", "pitch": "F3", "duration": "4n", "string": "male", "technique": "open", "finger": null, "bow": "tatakh" },
+    { "time": "2:3:0", "pitch": "Bb3", "duration": "4n", "string": "female", "technique": "open", "finger": null, "bow": "tülekhe" },
+    { "time": "3:0:0", "pitch": "Bb3", "duration": "1n", "string": "female", "technique": "double_stop", "finger": null, "bow": "tatakh", "drone": "F3", "articulations": ["wavy"] }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "title": "Etude 4 · Tsatsal Harmonics",
+  "composer": "Morin Khuur Simulator contributors",
+  "description": "Natural harmonics at the 1/2, 1/3, 1/4 and 1/5 nodes of each string, then one artificial harmonic.",
+  "source": "Original exercise written for this project — not a traditional melody.",
+  "tuning": { "maleString": "F3", "femaleString": "Bb3" },
+  "key": "Bb",
+  "tempoBpm": 60,
+  "timeSignature": "4/4",
+  "notes": [
+    { "time": "0:0:0", "pitch": "F3", "duration": "2n", "string": "male", "technique": "open", "finger": null, "bow": "tatakh" },
+    { "time": "0:2:0", "pitch": "F4", "duration": "2n", "string": "male", "technique": "tsatsal_harmonic", "finger": "ring", "bow": "tülekhe" },
+    { "time": "1:0:0", "pitch": "C5", "duration": "2n", "string": "male", "technique": "tsatsal_harmonic", "finger": "pinky", "bow": "tatakh" },
+    { "time": "1:2:0", "pitch": "F5", "duration": "2n", "string": "male", "technique": "tsatsal_harmonic", "finger": "ring", "bow": "tülekhe" },
+    { "time": "2:0:0", "pitch": "Bb3", "duration": "2n", "string": "female", "technique": "open", "finger": null, "bow": "tatakh" },
+    { "time": "2:2:0", "pitch": "Bb4", "duration": "2n", "string": "female", "technique": "tsatsal_harmonic", "finger": "ring", "bow": "tülekhe" },
+    { "time": "3:0:0", "pitch": "F5", "duration": "2n", "string": "female", "technique": "tsatsal_harmonic", "finger": "pinky", "bow": "tatakh" },
+    { "time": "3:2:0", "pitch": "D6", "duration": "2n", "string": "female", "technique": "tsatsal_harmonic", "finger": "middle", "bow": "tülekhe" },
+    { "time": "4:0:0", "pitch": "C6", "duration": "1n", "string": "female", "technique": "artificial_harmonic", "finger": "index", "bow": "tatakh" }
+  ]
+}
