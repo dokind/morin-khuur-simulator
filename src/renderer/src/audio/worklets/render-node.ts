@@ -7,12 +7,14 @@ import type { Song, VerificationReport } from '@renderer/core/notation'
 import type { StringId } from '@renderer/core/instrument'
 import type { StyleId } from '@renderer/core/performance'
 import { eventsDuration, songEvents, type TimedEvent } from '../song-events'
+import { VARIANT, soundboxImpulse, type Soundboard } from '../soundbox-ir'
 
 // Renders a song in Node through the same bowed-string AudioWorklet the app plays, with the worklet
-// globals stubbed exactly as bowed-string.test.ts does. It is the DRY STRING only: no soundbox
-// convolution, no room, no limiter (those are Web Audio nodes), no plucks or percussion, and the
-// bow is driven per note rather than by BowedVoice's full automation (no vibrato or ornament
-// curves). It exists so a song can leave the simulator as a file without a browser
+// globals stubbed exactly as bowed-string.test.ts does, then through the SOUNDBOX the app puts
+// after it (body.ts: the 90 Hz high-pass, the modal impulse response with a trace of the dry
+// bridge signal, the air low-pass), rebuilt here in plain arithmetic. Still no room and no limiter,
+// no plucks or percussion, and the bow is driven per note rather than by BowedVoice's full
+// automation (no vibrato or ornament curves). `body: 'none'` is the dry string alone. It exists so a song can leave the simulator as a file without a browser
 // (scripts/render-song.mjs), and so its pitch can be tested in CI.
 
 const BLOCK = 128
@@ -42,6 +44,8 @@ export interface NodeRenderOptions {
   /** Seconds of bow rise and release at a bow change (defaults 0.03 / 0.06). */
   rise?: number
   release?: number
+  /** Soundbox after the strings (default 'wood'); 'none' leaves the dry string. */
+  body?: Soundboard | 'none'
 }
 
 export interface NodeRender {
@@ -136,9 +140,132 @@ export function renderSongNode(song: Song, report: VerificationReport, opts: Nod
       for (let k = 0; k < BLOCK; k++) mix[i + k]! += block[k]!
     }
   }
+  const body = opts.body ?? 'wood'
+  const out = body === 'none' ? mix : soundbox(mix, sampleRate, body)
   let max = 0
-  for (const v of mix) max = Math.max(max, Math.abs(v))
+  for (const v of out) max = Math.max(max, Math.abs(v))
   const gain = max > 0 ? (opts.peak ?? 0.89) / max : 1
-  for (let i = 0; i < length; i++) mix[i]! *= gain
-  return { sampleRate, samples: mix, events, skipped, gain }
+  for (let i = 0; i < length; i++) out[i]! *= gain
+  return { sampleRate, samples: out, events, skipped, gain }
+}
+
+/**
+ * body.ts's Soundbox in arithmetic: high-pass 90 Hz, then the impulse response plus `dry` of the
+ * high-passed signal, then the air low-pass. The level gain is left out (the render is
+ * peak-normalised after). Same length as the input: the render already carries a release tail.
+ */
+export function soundbox(input: Float32Array, sampleRate: number, soundboard: Soundboard = 'wood'): Float32Array {
+  const v = VARIANT[soundboard]
+  const hp = biquad(input, sampleRate, 'highpass', 90, 0.6)
+  const wet = convolve(hp, soundboxImpulse(sampleRate, soundboard))
+  for (let i = 0; i < wet.length; i++) wet[i]! += v.dry * hp[i]!
+  return biquad(wet, sampleRate, 'lowpass', Math.min(v.airHz, 0.45 * sampleRate), 0.5)
+}
+
+/**
+ * A Web Audio BiquadFilterNode, low- or high-pass: the Audio EQ Cookbook coefficients with Q read
+ * in dB, as the Web Audio spec reads it for these two types (Tone.Filter hands Q straight through).
+ */
+export function biquad(x: Float32Array, sampleRate: number, type: 'lowpass' | 'highpass', freq: number, qDb: number): Float32Array {
+  const w0 = (2 * Math.PI * freq) / sampleRate
+  const alpha = Math.sin(w0) / (2 * 10 ** (qDb / 20))
+  const cos = Math.cos(w0)
+  const a0 = 1 + alpha
+  const b0 = (type === 'lowpass' ? (1 - cos) / 2 : (1 + cos) / 2) / a0
+  const b1 = (type === 'lowpass' ? 1 - cos : -(1 + cos)) / a0
+  const b2 = b0
+  const a1 = (-2 * cos) / a0
+  const a2 = (1 - alpha) / a0
+  const y = new Float32Array(x.length)
+  let x1 = 0
+  let x2 = 0
+  let y1 = 0
+  let y2 = 0
+  for (let i = 0; i < x.length; i++) {
+    const xi = x[i]!
+    const yi = b0 * xi + b1 * x1 + b2 * x2 - a1 * y1 - a2 * y2
+    x2 = x1
+    x1 = xi
+    y2 = y1
+    y1 = yi
+    y[i] = yi
+  }
+  return y
+}
+
+/** Linear convolution by FFT overlap-add, truncated to the input's length. */
+export function convolve(x: Float32Array, h: Float32Array): Float32Array {
+  let n = 1
+  while (n < 2 * h.length) n <<= 1
+  const step = n - h.length + 1
+  const hr = new Float64Array(n)
+  const hi = new Float64Array(n)
+  hr.set(h)
+  fft(hr, hi, false)
+  const y = new Float32Array(x.length)
+  const re = new Float64Array(n)
+  const im = new Float64Array(n)
+  for (let at = 0; at < x.length; at += step) {
+    re.fill(0)
+    im.fill(0)
+    const count = Math.min(step, x.length - at)
+    for (let k = 0; k < count; k++) re[k] = x[at + k]!
+    fft(re, im, false)
+    for (let k = 0; k < n; k++) {
+      const r = re[k]! * hr[k]! - im[k]! * hi[k]!
+      im[k] = re[k]! * hi[k]! + im[k]! * hr[k]!
+      re[k] = r
+    }
+    fft(re, im, true)
+    const end = Math.min(n, x.length - at)
+    for (let k = 0; k < end; k++) y[at + k]! += re[k]!
+  }
+  return y
+}
+
+/** In-place radix-2 complex FFT (length a power of two); the inverse is scaled by 1/n. */
+function fft(re: Float64Array, im: Float64Array, inverse: boolean): void {
+  const n = re.length
+  for (let i = 1, j = 0; i < n; i++) {
+    let bit = n >> 1
+    for (; j & bit; bit >>= 1) j ^= bit
+    j ^= bit
+    if (i < j) {
+      const tr = re[i]!
+      re[i] = re[j]!
+      re[j] = tr
+      const ti = im[i]!
+      im[i] = im[j]!
+      im[j] = ti
+    }
+  }
+  for (let len = 2; len <= n; len <<= 1) {
+    const half = len >> 1
+    const ang = ((inverse ? 2 : -2) * Math.PI) / len
+    const wr = Math.cos(ang)
+    const wi = Math.sin(ang)
+    for (let i = 0; i < n; i += len) {
+      let cr = 1
+      let ci = 0
+      for (let k = 0; k < half; k++) {
+        const a = i + k
+        const b = a + half
+        const br = re[b]! * cr - im[b]! * ci
+        const bi = re[b]! * ci + im[b]! * cr
+        re[b] = re[a]! - br
+        im[b] = im[a]! - bi
+        re[a] = re[a]! + br
+        im[a] = im[a]! + bi
+        const t = cr * wr - ci * wi
+        ci = cr * wi + ci * wr
+        cr = t
+      }
+    }
+  }
+  if (inverse) {
+    for (let i = 0; i < n; i++) {
+      re[i] = re[i]! / n
+      im[i] = im[i]! / n
+    }
+  }
 }

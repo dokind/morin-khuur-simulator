@@ -1,8 +1,8 @@
 // Renders a songs/*.mkhuur.json to a 48 kHz 16-bit mono WAV through the bowed-string worklet,
-// in Node, with no browser: the dry string only (no soundbox, room or plucks — see
-// src/renderer/src/audio/worklets/render-node.ts for exactly what it leaves out).
+// in Node, with no browser: the string through the soundbox (--body=none for the dry string; no
+// room or plucks — see src/renderer/src/audio/worklets/render-node.ts for what it leaves out).
 //
-//   node scripts/render-song.mjs songs/01-open-strings.mkhuur.json [out.wav] [--style=khalkh-stage] [--rate=48000]
+//   node scripts/render-song.mjs songs/01-open-strings.mkhuur.json [out.wav] [--style=khalkh-stage] [--rate=48000] [--body=wood|hide|none]
 //
 // The TypeScript sources are loaded through Vite's SSR loader (already a dev dependency), with
 // the same aliases vitest uses, so the script and the tests run the same code.
@@ -16,7 +16,7 @@ const args = process.argv.slice(2)
 const flags = Object.fromEntries(args.filter((a) => a.startsWith('--')).map((a) => a.slice(2).split('=')))
 const [input, output] = args.filter((a) => !a.startsWith('--'))
 if (!input) {
-  console.error('usage: node scripts/render-song.mjs <song.mkhuur.json> [out.wav] [--style=<id>] [--rate=<Hz>]')
+  console.error('usage: node scripts/render-song.mjs <song.mkhuur.json> [out.wav] [--style=<id>] [--rate=<Hz>] [--body=wood|hide|none]')
   process.exit(2)
 }
 const outPath = resolve(output ?? `out/render/${basename(input).replace(/\.mkhuur\.json$/, '')}.wav`)
@@ -47,7 +47,7 @@ try {
   if (!parsed.song) throw new Error(`parse failed: ${parsed.issues.map((i) => i.message).join('; ')}`)
   const report = verifySong(parsed.song)
   const sampleRate = Number(flags.rate ?? 48000)
-  const r = renderSongNode(parsed.song, report, { sampleRate, ...(flags.style ? { style: flags.style } : {}) })
+  const r = renderSongNode(parsed.song, report, { sampleRate, ...(flags.style ? { style: flags.style } : {}), ...(flags.body ? { body: flags.body } : {}) })
   mkdirSync(dirname(outPath), { recursive: true })
   writeFileSync(outPath, encodeWav({ sampleRate, channels: [r.samples] }))
 
