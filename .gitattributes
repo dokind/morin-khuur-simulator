@@ -1,1 +1,23 @@
-site/** text eol=lf
+# Landing-page text keeps LF line endings: site/vercel.json pins the inline <head> script of
+# site/index.html by its SHA-256, and a CRLF checkout would change that hash.
+site/**/*.html text eol=lf
+site/**/*.css text eol=lf
+site/**/*.js text eol=lf
+site/**/*.json text eol=lf
+site/**/*.svg text eol=lf
+site/**/*.txt text eol=lf
+site/**/*.xml text eol=lf
+site/**/.gitignore text eol=lf
+site/**/.vercelignore text eol=lf
+
+# Binary files are never converted.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.ico binary
+*.mp3 binary
+*.wav binary
+*.ogg binary
+*.woff binary
+*.woff2 binary
