@@ -19,6 +19,20 @@
         ".claude/vite.measure.config.ts"
       ],
       "port": 5174
+    },
+    {
+      "name": "site",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--yes",
+        "http-server",
+        "site",
+        "-p",
+        "5181",
+        "-s",
+        "-c-1"
+      ],
+      "port": 5181
     }
   ]
 }

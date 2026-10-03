@@ -1,0 +1,1138 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>
+/* Before first paint: language (?lang=, saved choice, else browser: mn* → Mongolian) and platform (?os= override for testing). */
+(function () {
+  var d = document.documentElement, l = null, o = null, u = navigator.userAgent || '', uad = navigator.userAgentData;
+  var q = /[?&]lang=(mn|en)\b/.exec(location.search);
+  if (q) l = q[1];
+  else { try { l = localStorage.getItem('mkhuur.site.lang'); } catch (e) {} }
+  if (l !== 'mn' && l !== 'en') l = /^mn\b/i.test((navigator.languages && navigator.languages[0]) || navigator.language || '') ? 'mn' : 'en';
+  d.lang = l;
+  var p = /[?&]os=(win|mac|linux|mobile|cros)\b/.exec(location.search);
+  if (p) o = p[1];
+  else {
+    var plat = (uad && uad.platform) || navigator.platform || '';
+    if ((uad && uad.mobile) || /Android|iPhone|iPad|iPod|Windows Phone|Mobile/i.test(u) || (/Mac/i.test(plat) && navigator.maxTouchPoints > 1)) o = 'mobile';
+    else if (/Win/i.test(plat) || /Windows/i.test(u)) o = 'win';
+    else if (/CrOS|Chrome OS/i.test(u + ' ' + plat)) o = 'cros';
+    else if (/Mac/i.test(plat) || /Mac OS X/i.test(u)) o = 'mac';
+    else if (/Linux|X11|BSD/i.test(plat + ' ' + u)) o = 'linux';
+    else o = 'win';
+  }
+  d.setAttribute('data-os', o);
+  if (o === 'win' && (/[?&]arch=arm\b/.test(location.search) || /ARM64|aarch64/i.test(u))) d.setAttribute('data-arch', 'arm');
+})();
+</script>
+<title>Morin Khuur Simulator · Морин хуурын симулятор — the horsehead fiddle on your computer</title>
+<meta name="description" content="Free, open-source Windows app that simulates the Mongolian morin khuur (horsehead fiddle) with a real-time physical model — no recorded samples. Морин хуурын үнэгүй, нээлттэй эх кодтой симулятор.">
+<link rel="canonical" href="https://khuur.vercel.app/">
+<meta name="theme-color" content="#0b0907">
+<meta name="color-scheme" content="dark">
+<link rel="icon" href="favicon.ico" sizes="48x48">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Morin Khuur Simulator">
+<meta property="og:url" content="https://khuur.vercel.app/">
+<meta property="og:title" content="Morin Khuur Simulator · Морин хуурын симулятор">
+<meta property="og:description" content="The Mongolian horsehead fiddle on your computer: two horsehair strings, an underhand bow, tsatsal harmonics and the whinny — every sound computed by a physical model. Free and open source for Windows.">
+<meta property="og:image" content="https://khuur.vercel.app/assets/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="The Morin Khuur Simulator Playground: a morin khuur with side-stop pads on its two strings and a bow gesture pad.">
+<meta property="og:locale" content="en_US">
+<meta property="og:locale:alternate" content="mn_MN">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Morin Khuur Simulator · Морин хуурын симулятор">
+<meta name="twitter:description" content="The Mongolian horsehead fiddle on your computer — every sound computed by a physical model. Free and open source for Windows.">
+<meta name="twitter:image" content="https://khuur.vercel.app/assets/og-image.png">
+<meta name="twitter:image:alt" content="The Morin Khuur Simulator Playground.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,600;1,500&amp;family=Golos+Text:wght@400;500;600;700&amp;display=swap">
+<link rel="stylesheet" href="styles.css">
+<link rel="preconnect" href="https://api.github.com" crossorigin>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Morin Khuur Simulator",
+  "alternateName": "Морин хуурын симулятор",
+  "url": "https://khuur.vercel.app/",
+  "image": "https://khuur.vercel.app/assets/og-image.png",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Windows 10, Windows 11",
+  "softwareVersion": "0.1.0",
+  "downloadUrl": "https://github.com/dokind/morin-khuur-simulator/releases/latest",
+  "license": "https://opensource.org/licenses/MIT",
+  "isAccessibleForFree": true,
+  "inLanguage": ["en", "mn"],
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "codeRepository": "https://github.com/dokind/morin-khuur-simulator",
+  "description": "A desktop app that simulates the Mongolian morin khuur (horsehead fiddle) with a real-time physical model of a bowed horsehair string and its soundbox. No recorded samples."
+}
+</script>
+<script src="main.js" defer></script>
+</head>
+<body>
+<svg class="sprite" aria-hidden="true" focusable="false"><defs>
+  <symbol id="i-gh" viewBox="0 0 16 16"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></symbol>
+  <symbol id="i-win" viewBox="0 0 24 24"><path fill="currentColor" d="M3 5.6l7.4-1v7H3zM11.6 4.4L21 3v8.6h-9.4zM3 12.6h7.4v7L3 18.4zM11.6 12.6H21V21l-9.4-1.3z"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 4v11m0 0l-4.5-4.5M12 15l4.5-4.5M5 19h14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-zoom" viewBox="0 0 24 24"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path fill="currentColor" d="M8 5.5v13l10.5-6.5z"/></symbol>
+  <symbol id="i-pause" viewBox="0 0 24 24"><path fill="currentColor" d="M7 5h3.6v14H7zM13.4 5H17v14h-3.6z"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2.8l2.8 5.7 6.3.9-4.6 4.5 1.1 6.3L12 17.2l-5.6 3 1.1-6.3-4.6-4.5 6.3-.9z"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 4.5-3.4 8.2-8 9-4.6-.8-8-4.5-8-9V6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8.5" y="8.5" width="11" height="11" rx="2.2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M15.5 8.5V6.7a2.2 2.2 0 0 0-2.2-2.2H6.7a2.2 2.2 0 0 0-2.2 2.2v6.6a2.2 2.2 0 0 0 2.2 2.2h1.8" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-ext" viewBox="0 0 24 24"><path d="M7 17L17 7M9 7h8v8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+  <!-- ulzii (endless knot), drawn for this page; the gaps take the colour behind them (--knot-gap) -->
+  <symbol id="ulzii" viewBox="-2 -3 132 82"><g transform="translate(64 38) rotate(-45) translate(-40 -40)" fill="none" stroke-linejoin="round"><path d="M8 20H60H66A10 10 0 0 1 66 40H20H14A10 10 0 0 0 14 60H60H72A12 12 0 1 1 60 72V20V14A10 10 0 0 0 40 14V60V66A10 10 0 0 1 20 66V8A12 12 0 1 0 8 20Z" stroke="currentColor" stroke-width="4.2"/><path d="M13.5 20H26.5M20 33.5V46.5M13.5 60H26.5M40 13.5V26.5M33.5 40H46.5M40 53.5V66.5M53.5 20H66.5M60 33.5V46.5M53.5 60H66.5" class="knot-gap" stroke-width="8.4"/><path d="M13.5 20H26.5M20 33.5V46.5M13.5 60H26.5M40 13.5V26.5M33.5 40H46.5M40 53.5V66.5M53.5 20H66.5M60 33.5V46.5M53.5 60H66.5" stroke="currentColor" stroke-width="4.2"/></g></symbol>
+  <!-- ram's-horn scroll (эвэр хээ) for frame corners -->
+  <symbol id="horn" viewBox="0 0 48 48"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.6"><path d="M5 5C18 5 28 5 33 9.5C37.5 13.5 34.5 20 29.5 18.5C25.5 17.3 26.5 12.6 30 13.6"/><path d="M5 5C5 18 5 28 9.5 33C13.5 37.5 20 34.5 18.5 29.5C17.3 25.5 12.6 26.5 13.6 30"/></g><path d="M5 1.6L8.4 5L5 8.4L1.6 5Z" fill="currentColor"/></symbol>
+</defs></svg>
+<a class="skip" href="#main"><span data-l="en" lang="en">Skip to content</span><span data-l="mn" lang="mn">Үндсэн агуулга руу шилжих</span></a>
+
+<!-- ============ Header ============ -->
+<header class="site-header" id="top">
+  <div class="container header-inner">
+    <a class="brand" href="#top" aria-label="Morin Khuur Simulator — back to top" data-label-en="Morin Khuur Simulator — back to top" data-label-mn="Морин хуурын симулятор — дээш буцах">
+      <img src="assets/logo.svg" alt="" width="36" height="36">
+      <span class="brand-name"><span data-l="en" lang="en">Morin Khuur Simulator</span><span data-l="mn" lang="mn">Морин хуурын симулятор</span></span>
+    </a>
+    <nav class="site-nav" id="site-nav" aria-label="Sections" data-label-en="Sections" data-label-mn="Хэсгүүд">
+      <a href="#features"><span data-l="en" lang="en">Features</span><span data-l="mn" lang="mn">Боломжууд</span></a>
+      <a href="#listen"><span data-l="en" lang="en">Listen</span><span data-l="mn" lang="mn">Сонсох</span></a>
+      <a href="#how"><span data-l="en" lang="en">How it works</span><span data-l="mn" lang="mn">Хэрхэн ажилладаг</span></a>
+      <a href="#heritage"><span data-l="en" lang="en">Heritage</span><span data-l="mn" lang="mn">Өв соёл</span></a>
+      <a href="#faq"><span data-l="en" lang="en">FAQ</span><span data-l="mn" lang="mn">Асуулт</span></a>
+      <a class="nav-extra" href="#download"><svg width="18" height="18" aria-hidden="true"><use href="#i-down"/></svg><span data-l="en" lang="en">Download</span><span data-l="mn" lang="mn">Татах</span></a>
+      <a class="nav-extra" href="https://github.com/dokind/morin-khuur-simulator"><svg width="18" height="18" aria-hidden="true"><use href="#i-gh"/></svg>GitHub</a>
+    </nav>
+    <div class="header-actions">
+      <div class="lang" role="group" aria-label="Language · Хэл">
+        <button type="button" data-set-lang="mn" aria-pressed="false" lang="mn" title="Монгол хэл">МН</button>
+        <button type="button" data-set-lang="en" aria-pressed="true" lang="en" title="English">EN</button>
+      </div>
+      <a class="icon-btn header-gh" href="https://github.com/dokind/morin-khuur-simulator" aria-label="GitHub repository" data-label-en="GitHub repository" data-label-mn="GitHub дээрх эх код">
+        <svg width="20" height="20" aria-hidden="true"><use href="#i-gh"/></svg>
+      </a>
+      <a class="btn btn-small header-dl" href="#download">
+        <svg width="16" height="16" aria-hidden="true"><use href="#i-down"/></svg>
+        <span data-l="en" lang="en">Download</span><span data-l="mn" lang="mn">Татах</span>
+      </a>
+      <button class="icon-btn menu-btn" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Menu" data-label-en="Menu" data-label-mn="Цэс">
+        <svg class="i-open" width="22" height="22" aria-hidden="true"><use href="#i-menu"/></svg>
+        <svg class="i-shut" width="22" height="22" aria-hidden="true"><use href="#i-close"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+
+<!-- ============ Hero ============ -->
+<section class="hero" aria-labelledby="hero-title">
+  <div class="hero-sky" aria-hidden="true">
+    <div class="sky-layer"><svg class="stars" viewBox="0 0 1440 640" preserveAspectRatio="xMidYMin slice"><g fill="#fff6e4"><circle cx="0" cy="543" r="0.6" opacity="0.69"/><circle cx="474" cy="393" r="0.9" opacity="0.66"/><circle cx="674" cy="545" r="0.6" opacity="0.56"/><circle cx="991" cy="306" r="1.1" opacity="0.80"/><circle cx="483" cy="467" r="0.6" opacity="0.43"/><circle cx="496" cy="322" r="0.9" opacity="0.35"/><circle cx="408" cy="123" r="0.7" opacity="0.57"/><circle cx="336" cy="530" r="1.1" opacity="0.63"/><circle cx="743" cy="208" r="1.2" opacity="0.49"/><circle cx="362" cy="264" r="0.7" opacity="0.48"/><circle cx="1435" cy="55" r="0.6" opacity="0.52"/><circle cx="198" cy="544" r="1.1" opacity="0.78"/><circle cx="333" cy="384" r="1.0" opacity="0.39"/><circle cx="917" cy="545" r="1.8" opacity="0.36"/><circle cx="814" cy="334" r="0.7" opacity="0.38"/><circle cx="1323" cy="24" r="1.1" opacity="0.27"/><circle cx="1240" cy="613" r="1.0" opacity="0.50"/><circle cx="1048" cy="507" r="0.7" opacity="0.49"/><circle cx="805" cy="116" r="1.0" opacity="0.45"/><circle cx="609" cy="47" r="1.2" opacity="0.85"/><circle cx="1256" cy="541" r="1.0" opacity="0.33"/><circle cx="803" cy="409" r="0.8" opacity="0.36"/><circle cx="239" cy="321" r="0.9" opacity="0.55"/><circle cx="419" cy="61" r="0.8" opacity="0.30"/><circle cx="972" cy="65" r="1.2" opacity="0.50"/><circle cx="1115" cy="141" r="0.5" opacity="0.39"/><circle cx="246" cy="10" r="1.0" opacity="0.58"/><circle cx="132" cy="61" r="1.0" opacity="0.71"/><circle cx="1231" cy="583" r="1.0" opacity="0.59"/><circle cx="586" cy="203" r="0.9" opacity="0.68"/><circle cx="911" cy="374" r="1.1" opacity="0.84"/><circle cx="701" cy="578" r="0.8" opacity="0.30"/><circle cx="1150" cy="17" r="1.1" opacity="0.63"/><circle cx="772" cy="169" r="0.9" opacity="0.77"/><circle cx="989" cy="163" r="0.6" opacity="0.60"/><circle cx="1326" cy="0" r="0.8" opacity="0.26"/><circle cx="1029" cy="576" r="0.9" opacity="0.72"/><circle cx="1056" cy="272" r="1.3" opacity="0.62"/><circle cx="837" cy="68" r="0.9" opacity="0.63"/><circle cx="345" cy="529" r="1.7" opacity="0.49"/><circle cx="950" cy="438" r="1.9" opacity="0.55"/><circle cx="612" cy="493" r="1.0" opacity="0.79"/><circle cx="274" cy="366" r="0.6" opacity="0.82"/><circle cx="81" cy="10" r="1.2" opacity="0.77"/><circle cx="693" cy="58" r="1.3" opacity="0.31"/><circle cx="674" cy="441" r="0.9" opacity="0.67"/><circle cx="883" cy="586" r="1.2" opacity="0.68"/><circle cx="1156" cy="37" r="1.7" opacity="0.64"/><circle cx="1252" cy="4" r="0.7" opacity="0.49"/><circle cx="1147" cy="0" r="0.6" opacity="0.64"/><circle cx="48" cy="37" r="1.0" opacity="0.40"/><circle cx="1171" cy="99" r="0.7" opacity="0.40"/><circle cx="1253" cy="333" r="1.1" opacity="0.74"/><circle cx="1095" cy="591" r="0.7" opacity="0.68"/><circle cx="1244" cy="34" r="1.0" opacity="0.74"/><circle cx="662" cy="135" r="1.0" opacity="0.56"/><circle cx="720" cy="65" r="1.0" opacity="0.43"/><circle cx="884" cy="239" r="0.9" opacity="0.44"/><circle cx="913" cy="500" r="0.8" opacity="0.46"/><circle cx="581" cy="177" r="1.8" opacity="0.41"/><circle cx="175" cy="48" r="0.6" opacity="0.61"/><circle cx="1060" cy="515" r="1.2" opacity="0.42"/><circle cx="54" cy="16" r="1.1" opacity="0.79"/><circle cx="787" cy="63" r="1.0" opacity="0.36"/><circle cx="984" cy="260" r="0.7" opacity="0.27"/></g></svg></div>
+    <div class="sky-layer tw tw1"><svg class="stars" viewBox="0 0 1440 640" preserveAspectRatio="xMidYMin slice"><g fill="#fff6e4"><circle cx="425" cy="559" r="1.0" opacity="0.78"/><circle cx="1264" cy="18" r="0.6" opacity="0.49"/><circle cx="75" cy="408" r="1.0" opacity="0.55"/><circle cx="866" cy="370" r="0.5" opacity="0.33"/><circle cx="122" cy="0" r="1.2" opacity="0.37"/><circle cx="1271" cy="357" r="1.2" opacity="0.72"/><circle cx="1294" cy="453" r="1.0" opacity="0.78"/><circle cx="1293" cy="37" r="1.2" opacity="0.67"/><circle cx="902" cy="1" r="0.9" opacity="0.70"/><circle cx="399" cy="47" r="1.6" opacity="0.59"/></g></svg></div>
+    <div class="sky-layer tw tw2"><svg class="stars" viewBox="0 0 1440 640" preserveAspectRatio="xMidYMin slice"><g fill="#fff6e4"><circle cx="807" cy="210" r="0.6" opacity="0.80"/><circle cx="1096" cy="79" r="1.4" opacity="0.30"/><circle cx="1403" cy="31" r="0.9" opacity="0.32"/><circle cx="1431" cy="10" r="0.7" opacity="0.25"/><circle cx="785" cy="136" r="0.6" opacity="0.29"/><circle cx="1146" cy="459" r="1.4" opacity="0.37"/><circle cx="1169" cy="294" r="1.1" opacity="0.74"/><circle cx="826" cy="300" r="0.6" opacity="0.38"/><circle cx="181" cy="31" r="1.6" opacity="0.48"/><circle cx="1086" cy="421" r="1.1" opacity="0.66"/></g></svg></div>
+    <div class="sky-layer tw tw3"><svg class="stars" viewBox="0 0 1440 640" preserveAspectRatio="xMidYMin slice"><g fill="#fff6e4"><circle cx="1176" cy="64" r="1.0" opacity="0.67"/><circle cx="339" cy="128" r="0.6" opacity="0.54"/><circle cx="522" cy="392" r="1.5" opacity="0.58"/><circle cx="1185" cy="538" r="1.0" opacity="0.83"/><circle cx="496" cy="47" r="0.6" opacity="0.28"/></g></svg></div>
+  </div>
+
+  <div class="container hero-grid">
+    <div class="hero-copy">
+      <p class="hero-eyebrow">
+        <span class="pill"><span class="pill-dot" aria-hidden="true"></span><span>v<span data-version>0.1.0</span><span data-first-release> · <span data-l="en" lang="en">first public release</span><span data-l="mn" lang="mn">анхны нийтийн хувилбар</span></span></span></span>
+        <span class="hero-tags"><span data-l="en" lang="en">Free · Open source · Windows</span><span data-l="mn" lang="mn">Үнэгүй · Нээлттэй эх код · Windows</span></span>
+      </p>
+      <h1 id="hero-title" class="hero-title">
+        <span data-l="en" lang="en">The morin khuur, <em>on your computer.</em></span>
+        <span data-l="mn" lang="mn">Морин хуур&nbsp;— <em>таны компьютер дээр.</em></span>
+      </h1>
+      <p class="hero-lead" data-l="en" lang="en">A desktop app that plays the Mongolian horsehead fiddle: two horsehair strings stopped from the side with the fingernails, an underhand bow, <i>tsatsal</i> harmonics, galloping rhythms and the whinny. Every sound is synthesised in real time by a physical model — no recorded samples.</p>
+      <p class="hero-lead" data-l="mn" lang="mn">Монгол морин хуурыг загварчилсан компьютерийн програм: хумсаар хажуунаас нь дардаг хоёр хялгасан утас, доогуур атгадаг нум, цацал, давхианы хэмнэл, морины янцгаалт. Бүх дуу авиаг бодит хугацаанд физик загвараар үүсгэдэг — бэлэн бичлэг огт ашигладаггүй.</p>
+
+    </div>
+
+    <div class="dl hero-dl" id="get">
+        <!-- Windows (also the default when the platform is unknown) -->
+        <div class="dl-win">
+          <div class="dl-row">
+            <a class="btn btn-primary btn-xl" data-dl="primary" href="https://github.com/dokind/morin-khuur-simulator/releases/download/v0.1.0/MorinKhuurSimulator-Setup-0.1.0-x64.exe">
+              <svg width="22" height="22" aria-hidden="true"><use href="#i-win"/></svg>
+              <span class="btn-stack">
+                <span class="btn-label">
+                  <span data-l="en" lang="en"><span class="only-x64">Download for Windows</span><span class="only-arm">Download for Windows on ARM</span></span>
+                  <span data-l="mn" lang="mn"><span class="only-x64">Windows-д татах</span><span class="only-arm">Windows ARM-д татах</span></span>
+                </span>
+                <span class="btn-sub">
+                  <span data-l="en" lang="en"><span class="only-x64">64-bit installer · <span data-size="x64">107</span>&nbsp;MB</span><span class="only-arm">ARM installer · <span data-size="arm64">101</span>&nbsp;MB</span> · v<span data-version>0.1.0</span></span>
+                  <span data-l="mn" lang="mn"><span class="only-x64">64 битийн суулгагч · <span data-size="x64">107</span>&nbsp;МБ</span><span class="only-arm">ARM суулгагч · <span data-size="arm64">101</span>&nbsp;МБ</span> · v<span data-version>0.1.0</span></span>
+                </span>
+              </span>
+            </a>
+            <a class="btn btn-ghost btn-xl" href="https://github.com/dokind/morin-khuur-simulator">
+              <svg width="18" height="18" aria-hidden="true"><use href="#i-gh"/></svg>
+              <span><span data-l="en" lang="en">View on GitHub</span><span data-l="mn" lang="mn">GitHub дээр үзэх</span></span>
+            </a>
+          </div>
+          <p class="dl-more">
+            <span class="dl-more-label"><span data-l="en" lang="en">Also:</span><span data-l="mn" lang="mn">Мөн:</span></span>
+            <a class="only-arm" data-dl="x64" href="https://github.com/dokind/morin-khuur-simulator/releases/download/v0.1.0/MorinKhuurSimulator-Setup-0.1.0-x64.exe"><span data-l="en" lang="en">64-bit installer</span><span data-l="mn" lang="mn">64 битийн суулгагч</span></a>
+            <a class="only-x64" data-dl="arm64" href="https://github.com/dokind/morin-khuur-simulator/releases/download/v0.1.0/MorinKhuurSimulator-Setup-0.1.0-arm64.exe"><span data-l="en" lang="en">Windows on ARM</span><span data-l="mn" lang="mn">ARM суулгагч</span></a>
+            <a data-dl="portable" href="https://github.com/dokind/morin-khuur-simulator/releases/download/v0.1.0/MorinKhuurSimulator-Portable-0.1.0.exe"><span data-l="en" lang="en">Portable (no install)</span><span data-l="mn" lang="mn">Зөөврийн хувилбар</span></a>
+            <a href="https://github.com/dokind/morin-khuur-simulator/releases"><span data-l="en" lang="en">All releases</span><span data-l="mn" lang="mn">Бүх хувилбар</span></a>
+          </p>
+          <p class="dl-hint">
+            <svg width="15" height="15" aria-hidden="true"><use href="#i-shield"/></svg>
+            <span data-l="en" lang="en">Not code-signed yet: if SmartScreen warns, choose <b>More info → Run anyway</b>. <a href="#first-run">How?</a></span>
+            <span data-l="mn" lang="mn">Тоон гарын үсэггүй тул SmartScreen анхааруулбал <b>More info → Run anyway</b> дарна. <a href="#first-run">Яаж?</a></span>
+          </p>
+        </div>
+
+        <!-- macOS, Linux, ChromeOS, phones: explain, act, and keep the Windows links -->
+        <div class="dl-other">
+          <p class="dl-other-title">
+            <span class="pf pf-mobile"><span data-l="en" lang="en">A desktop app for Windows</span><span data-l="mn" lang="mn">Windows-д зориулсан програм</span></span>
+            <span class="pf pf-desk"><span data-l="en" lang="en">Windows only, for now</span><span data-l="mn" lang="mn">Одоогоор зөвхөн Windows-д</span></span>
+          </p>
+          <div class="dl-row">
+            <a class="btn btn-primary btn-lg" href="https://github.com/dokind/morin-khuur-simulator">
+              <svg width="18" height="18" aria-hidden="true"><use href="#i-gh"/></svg>
+              <span><span data-l="en" lang="en">View on GitHub</span><span data-l="mn" lang="mn">GitHub дээр үзэх</span></span>
+            </a>
+            <a class="btn btn-ghost btn-lg" href="https://github.com/dokind/morin-khuur-simulator">
+              <svg width="18" height="18" aria-hidden="true"><use href="#i-star"/></svg>
+              <span><span data-l="en" lang="en">Star &amp; watch for updates</span><span data-l="mn" lang="mn">Од дарж, шинэчлэлийг дагах</span></span>
+            </a>
+          </div>
+          <p class="dl-note">
+            <span class="pf pf-mobile"><span data-l="en" lang="en">Open this page on your Windows PC to install it. Meanwhile, <a href="#listen">the demos below</a> play right here.</span><span data-l="mn" lang="mn">Суулгахын тулд энэ хуудсыг Windows компьютерээсээ нээгээрэй. Тэр хооронд <a href="#listen">доорх жишээ дуунуудыг</a> эндээс шууд сонсож болно.</span></span>
+            <span class="pf pf-mac"><span data-l="en" lang="en">macOS builds aren’t packaged yet. You can <a href="#build">build the app from source</a>, or star the repository to hear about new releases.</span><span data-l="mn" lang="mn">macOS-д бэлэн хувилбар хараахан гараагүй. Програмыг <a href="#build">эх кодоос нь өөрөө бүтээж</a> болно, эсвэл GitHub дээр од дарж шинэ хувилбарыг дагаарай.</span></span>
+            <span class="pf pf-linux"><span data-l="en" lang="en">Linux builds aren’t packaged yet. You can <a href="#build">build the app from source</a>, or star the repository to hear about new releases.</span><span data-l="mn" lang="mn">Linux-д бэлэн хувилбар хараахан гараагүй. Програмыг <a href="#build">эх кодоос нь өөрөө бүтээж</a> болно, эсвэл GitHub дээр од дарж шинэ хувилбарыг дагаарай.</span></span>
+            <span class="pf pf-cros"><span data-l="en" lang="en">Morin Khuur Simulator runs on Windows 10/11 for now. On other systems you can <a href="#build">build it from source</a>.</span><span data-l="mn" lang="mn">Одоогоор Windows 10/11 дээр ажилладаг. Бусад системд <a href="#build">эх кодоос нь өөрөө бүтээж</a> болно.</span></span>
+          </p>
+          <p class="dl-share pf pf-mobile">
+            <button class="link-btn" type="button" data-share-link>
+              <svg width="16" height="16" aria-hidden="true"><use href="#i-copy"/></svg>
+              <span class="share-idle"><span class="if-share"><span data-l="en" lang="en">Send this page to your PC</span><span data-l="mn" lang="mn">Энэ хуудсыг компьютер рүүгээ илгээх</span></span><span class="if-copy"><span data-l="en" lang="en">Copy the link for your PC</span><span data-l="mn" lang="mn">Компьютерт нээх холбоосыг хуулах</span></span></span>
+              <span class="share-done"><span data-l="en" lang="en">Link copied</span><span data-l="mn" lang="mn">Холбоос хуулагдлаа</span></span>
+            </button>
+          </p>
+          <p class="dl-more">
+            <span class="dl-more-label"><span data-l="en" lang="en">Windows downloads:</span><span data-l="mn" lang="mn">Windows-д татах:</span></span>
+            <a data-dl="x64" href="https://github.com/dokind/morin-khuur-simulator/releases/download/v0.1.0/MorinKhuurSimulator-Setup-0.1.0-x64.exe"><span data-l="en" lang="en">64-bit installer</span><span data-l="mn" lang="mn">64 битийн суулгагч</span></a>
+            <a data-dl="arm64" href="https://github.com/dokind/morin-khuur-simulator/releases/download/v0.1.0/MorinKhuurSimulator-Setup-0.1.0-arm64.exe"><span data-l="en" lang="en">ARM</span><span data-l="mn" lang="mn">ARM</span></a>
+            <a data-dl="portable" href="https://github.com/dokind/morin-khuur-simulator/releases/download/v0.1.0/MorinKhuurSimulator-Portable-0.1.0.exe"><span data-l="en" lang="en">Portable</span><span data-l="mn" lang="mn">Зөөврийн</span></a>
+          </p>
+        </div>
+    </div>
+
+    <div class="hero-visual" aria-hidden="true">
+      <div class="khuur-stage">
+        <div class="k-glow"></div>
+        <svg class="khuur" viewBox="0 0 420 1010" focusable="false">
+          <defs>
+            <linearGradient id="kNeck" x1="198" y1="0" x2="222" y2="0" gradientUnits="userSpaceOnUse">
+              <stop offset="0" stop-color="#5a3216"/><stop offset="0.4" stop-color="#c88848"/><stop offset="0.6" stop-color="#e2a766"/><stop offset="1" stop-color="#6b3c1a"/>
+            </linearGradient>
+            <linearGradient id="kHead" x1="100" y1="40" x2="250" y2="240" gradientUnits="userSpaceOnUse">
+              <stop offset="0" stop-color="#f3bd7c"/><stop offset="0.5" stop-color="#bf7b3d"/><stop offset="1" stop-color="#6e3d19"/>
+            </linearGradient>
+            <linearGradient id="kPeg" x1="0" y1="-6" x2="0" y2="6" gradientUnits="userSpaceOnUse">
+              <stop offset="0" stop-color="#eab274"/><stop offset="1" stop-color="#7b4620"/>
+            </linearGradient>
+            <radialGradient id="kBox" cx="185" cy="770" r="300" gradientUnits="userSpaceOnUse">
+              <stop offset="0" stop-color="#eeb577"/><stop offset="0.5" stop-color="#b9783e"/><stop offset="1" stop-color="#5a3114"/>
+            </radialGradient>
+            <linearGradient id="kSide" x1="308" y1="0" x2="352" y2="0" gradientUnits="userSpaceOnUse">
+              <stop offset="0" stop-color="#4a2810"/><stop offset="1" stop-color="#22120a"/>
+            </linearGradient>
+            <linearGradient id="kStr" x1="0" y1="250" x2="0" y2="960" gradientUnits="userSpaceOnUse">
+              <stop offset="0" stop-color="#fff4df" stop-opacity="0.55"/><stop offset="0.5" stop-color="#fff4df"/><stop offset="1" stop-color="#fff4df" stop-opacity="0.8"/>
+            </linearGradient>
+            <linearGradient id="kMaleEnv" x1="0" y1="334" x2="0" y2="894" gradientUnits="userSpaceOnUse">
+              <stop offset="0" stop-color="#5aa8ff" stop-opacity="0"/><stop offset="0.5" stop-color="#7ab8ff" stop-opacity="0.9"/><stop offset="1" stop-color="#5aa8ff" stop-opacity="0"/>
+            </linearGradient>
+            <linearGradient id="kFemEnv" x1="0" y1="334" x2="0" y2="894" gradientUnits="userSpaceOnUse">
+              <stop offset="0" stop-color="#ff9b3d" stop-opacity="0"/><stop offset="0.5" stop-color="#ffb066" stop-opacity="0.9"/><stop offset="1" stop-color="#ff9b3d" stop-opacity="0"/>
+            </linearGradient>
+            <linearGradient id="kBoxSheen" x1="86" y1="0" x2="334" y2="0" gradientUnits="userSpaceOnUse">
+              <stop offset="0" stop-color="#ffe2b8" stop-opacity="0.22"/><stop offset="0.12" stop-color="#ffe2b8" stop-opacity="0"/><stop offset="0.85" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity="0.28"/>
+            </linearGradient>
+            <clipPath id="kBoxClip"><path d="M124 690 H296 Q308 690 309.2 702 L332.8 973 Q334 985 322 985 H98 Q86 985 87.2 973 L110.8 702 Q112 690 124 690 Z"/></clipPath>
+            <filter id="kSoft" filterUnits="userSpaceOnUse" x="0" y="0" width="420" height="1010"><feGaussianBlur stdDeviation="5"/></filter>
+            <filter id="kShadow" filterUnits="userSpaceOnUse" x="0" y="0" width="420" height="1010"><feGaussianBlur stdDeviation="10"/></filter>
+          </defs>
+
+          <ellipse cx="214" cy="992" rx="170" ry="14" fill="#000" opacity="0.55" filter="url(#kShadow)"/>
+
+          <g transform="rotate(4 210 860)">
+            <!-- neck, pegbox, pegs -->
+            <rect x="198" y="320" width="24" height="390" rx="4" fill="url(#kNeck)"/>
+            <rect x="190" y="228" width="40" height="108" rx="8" fill="url(#kNeck)" stroke="#2a170a" stroke-width="2"/>
+            <rect x="201" y="242" width="18" height="80" rx="6" fill="#1a0e07"/>
+            <g transform="translate(0 262)">
+              <path d="M192 -5 L162 -6 Q150 -7 146 0 Q150 7 162 6 L192 5 Z" fill="url(#kPeg)" stroke="#2a170a" stroke-width="2"/>
+              <ellipse cx="150" cy="0" rx="6" ry="9" fill="url(#kPeg)" stroke="#2a170a" stroke-width="2"/>
+            </g>
+            <g transform="translate(0 300)">
+              <path d="M228 -5 L258 -6 Q270 -7 274 0 Q270 7 258 6 L228 5 Z" fill="url(#kPeg)" stroke="#2a170a" stroke-width="2"/>
+              <ellipse cx="270" cy="0" rx="6" ry="9" fill="url(#kPeg)" stroke="#2a170a" stroke-width="2"/>
+            </g>
+            <!-- horse head -->
+            <path d="M222 96 C236 98 246 108 241 120 C251 128 253 142 245 150 C255 160 255 174 247 182 C256 192 255 206 246 212 C253 220 249 232 236 238 L229 238 C236 200 238 150 222 96 Z" fill="#6a3a18" stroke="#2a170a" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M230 238 C236 196 238 150 226 112 C224 104 222 99 221 95 L227 60 C221 68 216 77 213 86 L210 66 L204 92 C186 100 160 120 138 140 C124 152 112 163 104 171 C97 177 95 186 99 191 C103 196 110 197 116 196 C118 199 121 202 127 202 C140 202 151 199 161 196 C171 199 182 200 188 194 C191 206 191 220 192 238 Z" fill="url(#kHead)" stroke="#2a170a" stroke-width="2.5" stroke-linejoin="round"/>
+            <path d="M181 132 C193 146 196 170 187 189" fill="none" stroke="#3b200c" stroke-opacity="0.55" stroke-width="2.5" stroke-linecap="round"/>
+            <path d="M168 117 C173 112 181 111 186 114 C181 119 173 120 168 117 Z" fill="#1a0d05"/>
+            <path d="M166 111 C172 105 182 104 189 109" fill="none" stroke="#3b200c" stroke-width="2" stroke-linecap="round"/>
+            <ellipse cx="108" cy="179" rx="3.2" ry="2.2" fill="#2a170a"/>
+            <path d="M101 191 L117 192.5" fill="none" stroke="#3b200c" stroke-width="1.8" stroke-linecap="round"/>
+            <path d="M150 134 C168 120 186 110 202 104" fill="none" stroke="#fff1d6" stroke-opacity="0.3" stroke-width="2" stroke-linecap="round"/>
+            <path d="M226 122 C231 152 231 190 228 230" fill="none" stroke="#2a170a" stroke-opacity="0.3" stroke-width="1.5"/>
+
+            <!-- soundbox -->
+            <path d="M308 690 L326 699 L352 976 L334 985 Z" fill="url(#kSide)"/>
+            <path d="M124 690 H296 Q308 690 309.2 702 L332.8 973 Q334 985 322 985 H98 Q86 985 87.2 973 L110.8 702 Q112 690 124 690 Z" fill="url(#kBox)" stroke="#2a170a" stroke-width="3"/>
+            <g clip-path="url(#kBoxClip)" fill="none" stroke="#4a2810" stroke-opacity="0.16" stroke-width="1.4">
+              <path d="M130 690 C126 780 120 880 114 985"/><path d="M152 690 C150 790 146 880 142 985"/><path d="M171 690 C172 770 168 880 166 985"/>
+              <path d="M246 690 C248 780 252 880 256 985"/><path d="M266 690 C268 790 274 880 280 985"/><path d="M288 690 C292 780 300 880 306 985"/>
+            </g>
+            <path d="M124 690 H296 Q308 690 309.2 702 L332.8 973 Q334 985 322 985 H98 Q86 985 87.2 973 L110.8 702 Q112 690 124 690 Z" fill="url(#kBoxSheen)"/>
+            <path d="M125 704 L295 704 L318.7 971 L101.3 971 Z" fill="none" stroke="#3b200c" stroke-opacity="0.55" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M131 711 L289 711 L311 964 L109 964 Z" fill="none" stroke="#f6c58a" stroke-opacity="0.18" stroke-width="1.5" stroke-linejoin="round"/>
+            <!-- carved corner scrolls, as on the app's soundbox -->
+            <g fill="none" stroke="#3b200c" stroke-opacity="0.6" stroke-width="2" stroke-linecap="round">
+              <path d="M140 728 a9 9 0 1 1 9 9 a5 5 0 1 1 -5 -5"/><path d="M280 728 a9 9 0 1 0 -9 9 a5 5 0 1 0 5 -5"/>
+              <path d="M132 944 a9 9 0 1 0 9 -9 a5 5 0 1 0 -5 5"/><path d="M288 944 a9 9 0 1 1 -9 -9 a5 5 0 1 1 5 5"/>
+            </g>
+            <!-- sound holes -->
+            <g fill="none" stroke="#1a0d05" stroke-width="5.5" stroke-linecap="round">
+              <path d="M156 756 C170 742 186 754 178 770 C170 786 150 792 152 812 C154 830 176 834 184 820"/>
+              <path d="M264 756 C250 742 234 754 242 770 C250 786 270 792 268 812 C266 830 244 834 236 820"/>
+            </g>
+            <g fill="#1a0d05"><circle cx="154" cy="759" r="5"/><circle cx="185" cy="818" r="5"/><circle cx="266" cy="759" r="5"/><circle cx="235" cy="818" r="5"/></g>
+
+            <rect x="193" y="330" width="34" height="7" rx="2" fill="#f0dcb4" stroke="#7a5a30" stroke-width="1"/>
+
+            <!-- vibrating envelopes: only while a demo plays -->
+            <g class="vib-amp">
+              <path class="vib vib-m" d="M203 334 Q219 614 203 894 Q187 614 203 334 Z" fill="url(#kMaleEnv)"/>
+              <path class="vib vib-f" d="M217 334 Q230 614 217 894 Q204 614 217 334 Z" fill="url(#kFemEnv)"/>
+            </g>
+            <g filter="url(#kSoft)" opacity="0.75">
+              <line x1="203" y1="334" x2="203" y2="894" stroke="#5aa8ff" stroke-width="5"/>
+              <line x1="217" y1="334" x2="217" y2="894" stroke="#ff9b3d" stroke-width="4"/>
+            </g>
+            <path d="M203 262 L203 894 L206 935" fill="none" stroke="url(#kStr)" stroke-width="2.6"/>
+            <path d="M217 300 L217 894 L214 935" fill="none" stroke="url(#kStr)" stroke-width="2"/>
+            <path d="M185 907 L235 907 L231 893 L189 893 Z" fill="#f0dcb4" stroke="#6b4a22" stroke-width="1.5" stroke-linejoin="round"/>
+            <path d="M198 934 L222 934 L229 976 L191 976 Z" fill="#24130a" stroke="#0e0703" stroke-width="1.5" stroke-linejoin="round"/>
+          </g>
+        </svg>
+        <!-- the bow is its own layer so its stroke animates on the compositor -->
+        <div class="k-bow">
+          <svg viewBox="0 0 420 1010" focusable="false">
+            <defs>
+              <linearGradient id="kBow" x1="18" y1="0" x2="402" y2="0" gradientUnits="userSpaceOnUse">
+                <stop offset="0" stop-color="#7a4a22"/><stop offset="0.5" stop-color="#d79a52"/><stop offset="1" stop-color="#8a5428"/>
+              </linearGradient>
+            </defs>
+            <g transform="rotate(4 210 860)">
+              <path d="M22 816 Q210 774 398 812" fill="none" stroke="url(#kBow)" stroke-width="6.5" stroke-linecap="round"/>
+              <path d="M40 810 Q210 776 380 806" fill="none" stroke="#ffd9a3" stroke-opacity="0.35" stroke-width="1.5" stroke-linecap="round"/>
+              <line x1="30" y1="834" x2="394" y2="829" stroke="#f3e7cf" stroke-width="2.6" stroke-linecap="round"/>
+              <line x1="394" y1="829" x2="398" y2="812" stroke="#8a5428" stroke-width="3" stroke-linecap="round"/>
+              <rect x="16" y="816" width="34" height="22" rx="5" fill="#1e1009" stroke="#f6a930" stroke-opacity="0.55" stroke-width="1.5"/>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hear it first: remote for the demos in the Listen section -->
+    <div class="hero-player" data-hero-player>
+      <button class="hp-play" type="button" data-hp-play aria-label="Play: Same notes, two styles">
+        <svg class="i-play" width="22" height="22" aria-hidden="true"><use href="#i-play"/></svg>
+        <svg class="i-pause" width="22" height="22" aria-hidden="true"><use href="#i-pause"/></svg>
+      </button>
+      <div class="hp-main">
+        <p class="hp-kicker"><span class="hp-title"><span data-l="en" lang="en">Hear it first</span><span data-l="mn" lang="mn">Эхлээд сонсоорой</span></span><span class="hp-now" data-hp-now>· <span data-l="en" lang="en">synthesised by the app</span><span data-l="mn" lang="mn">програмаар нийлэгжүүлсэн</span></span><span class="hp-time" data-hp-time>0:20</span></p>
+        <div class="hp-ab" role="group" aria-label="Same notes, two styles" data-label-en="Same notes, two styles" data-label-mn="Ижил нот, хоёр хэв маяг">
+          <button type="button" data-hp-style="0" aria-pressed="true"><b>A</b> <span data-l="en" lang="en">Khalkh stage</span><span data-l="mn" lang="mn">Халхын тайз</span></button>
+          <button type="button" data-hp-style="1" aria-pressed="false"><b>B</b> <span data-l="en" lang="en">Long song</span><span data-l="mn" lang="mn">Уртын дуу</span></button>
+        </div>
+        <div class="hp-bar" aria-hidden="true"><span data-hp-fill></span></div>
+      </div>
+      <div class="hp-pads" role="group" aria-label="More sounds" data-label-en="More sounds" data-label-mn="Бусад дуу">
+        <span class="hp-pads-label" aria-hidden="true"><span data-l="en" lang="en">More:</span><span data-l="mn" lang="mn">Бусад:</span></span>
+        <button type="button" data-hp-pad="open-strings.mp3" aria-pressed="false"><span data-l="en" lang="en">Open strings</span><span data-l="mn" lang="mn">Сул утас</span></button>
+        <button type="button" data-hp-pad="joroo-amble-tatlaga.mp3" aria-pressed="false"><span data-l="en" lang="en">Joroo amble</span><span data-l="mn" lang="mn">Жороо</span></button>
+        <button type="button" data-hp-pad="long-song-hide-top.mp3" aria-pressed="false"><span data-l="en" lang="en">Hide soundboard</span><span data-l="mn" lang="mn">Арьсан цар</span></button>
+        <button type="button" data-hp-pad="hooves-whinny.mp3" aria-pressed="false"><span data-l="en" lang="en">Hooves &amp; whinny</span><span data-l="mn" lang="mn">Төвөргөөн, янцгаалт</span></button>
+      </div>
+    </div>
+    <a class="hero-listen-fallback" href="#listen"><span data-l="en" lang="en">Hear it first — demos synthesised by the app ↓</span><span data-l="mn" lang="mn">Эхлээд сонсоорой — програмын нийлэгжүүлсэн жишээ ↓</span></a>
+  </div>
+  <svg class="hero-hills" viewBox="0 0 1440 200" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0 118 C180 80 320 72 480 96 C640 122 780 58 960 68 C1120 78 1260 112 1440 90 V200 H0 Z" fill="#140f0b"/>
+    <path d="M0 118 C180 80 320 72 480 96 C640 122 780 58 960 68 C1120 78 1260 112 1440 90" fill="none" stroke="#f6a930" stroke-opacity="0.22" stroke-width="1.2"/>
+    <path d="M0 160 C220 132 420 150 640 140 C860 130 1040 168 1260 150 C1340 144 1400 148 1440 150 V200 H0 Z" fill="#0b0907"/>
+  </svg>
+</section>
+
+<!-- ============ Facts strip ============ -->
+<section class="facts" aria-label="Key facts" data-label-en="Key facts" data-label-mn="Гол баримтууд">
+  <div class="container">
+    <ul class="facts-list">
+      <li class="reveal">
+        <span class="fact-num">0</span>
+        <span class="fact-text"><span data-l="en" lang="en">recorded samples — every sound is computed</span><span data-l="mn" lang="mn">бэлэн бичлэг — дуу бүрийг тооцоолж гаргана</span></span>
+      </li>
+      <li class="reveal">
+        <span class="fact-num">≈<span data-l="en" lang="en">0.2</span><span data-l="mn" lang="mn">0,2</span><small>¢</small></span>
+        <span class="fact-text"><span data-l="en" lang="en">average tuning of bowed notes (1¢ = 1/100 semitone)</span><span data-l="mn" lang="mn">нумаар татсан авианы дундаж хазайлт (1¢ = хагас тоны 1/100)</span></span>
+      </li>
+      <li class="reveal">
+        <span class="fact-num"><span data-l="en" lang="en">5&nbsp;Hz</span><span data-l="mn" lang="mn">5&nbsp;Гц</span><small> · ±14¢</small></span>
+        <span class="fact-text"><span data-l="en" lang="en">vibrato, tuned against a Mongolian State Conservatory recording</span><span data-l="mn" lang="mn">вибрато — Монгол Улсын Консерваторийн бичлэгээр тааруулсан</span></span>
+      </li>
+      <li class="reveal">
+        <span class="fact-num">MIT</span>
+        <span class="fact-text"><span data-l="en" lang="en">free and open-source licence</span><span data-l="mn" lang="mn">үнэгүй, нээлттэй эх кодын лиценз</span></span>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ What it is ============ -->
+<section class="section about" id="about" aria-labelledby="about-title">
+  <div class="container about-grid">
+    <figure class="fig1 reveal">
+      <svg class="fig1-svg" viewBox="0 0 420 1010" role="img" aria-labelledby="fig1-title">
+        <title id="fig1-title" data-text-en="Line drawing of a morin khuur with seven numbered parts" data-text-mn="Морин хуурын зураг, долоон хэсгийг дугаарласан">Line drawing of a morin khuur with seven numbered parts</title>
+        <g class="f-line" fill="none" stroke-linejoin="round" stroke-linecap="round">
+          <rect x="198" y="320" width="24" height="390" rx="4"/>
+          <rect x="190" y="228" width="40" height="108" rx="8"/>
+          <path d="M192 257 L162 256 Q150 255 146 262 Q150 269 162 268 L192 267"/><ellipse cx="150" cy="262" rx="6" ry="9"/>
+          <path d="M228 295 L258 294 Q270 293 274 300 Q270 307 258 306 L228 305"/><ellipse cx="270" cy="300" rx="6" ry="9"/>
+          <path d="M230 238 C236 196 238 150 226 112 C224 104 222 99 221 95 L227 60 C221 68 216 77 213 86 L210 66 L204 92 C186 100 160 120 138 140 C124 152 112 163 104 171 C97 177 95 186 99 191 C103 196 110 197 116 196 C118 199 121 202 127 202 C140 202 151 199 161 196 C171 199 182 200 188 194 C191 206 191 220 192 238"/>
+          <path d="M222 96 C236 98 246 108 241 120 C251 128 253 142 245 150 C255 160 255 174 247 182 C256 192 255 206 246 212 C253 220 249 232 236 238" opacity="0.6"/>
+          <path d="M168 117 C173 112 181 111 186 114 C181 119 173 120 168 117 Z"/>
+          <path d="M124 690 H296 Q308 690 309.2 702 L332.8 973 Q334 985 322 985 H98 Q86 985 87.2 973 L110.8 702 Q112 690 124 690 Z"/>
+          <path d="M125 704 L295 704 L318.7 971 L101.3 971 Z" opacity="0.45"/>
+          <path d="M156 756 C170 742 186 754 178 770 C170 786 150 792 152 812 C154 830 176 834 184 820"/>
+          <path d="M264 756 C250 742 234 754 242 770 C250 786 270 792 268 812 C266 830 244 834 236 820"/>
+          <path d="M185 907 L235 907 L231 893 L189 893 Z"/>
+          <path d="M198 934 L222 934 L229 976 L191 976 Z"/>
+        </g>
+        <line x1="203" y1="262" x2="203" y2="935" stroke="#5aa8ff" stroke-width="2.4"/>
+        <line x1="217" y1="300" x2="217" y2="935" stroke="#ff9b3d" stroke-width="2"/>
+        <!-- side-stops: the fingernail touches the hovering string from the side -->
+        <rect x="190" y="424" width="12" height="20" rx="6" fill="#173252" stroke="#5aa8ff" stroke-width="1.6"/>
+        <rect x="218" y="470" width="12" height="20" rx="6" fill="#4a2a0c" stroke="#ff9b3d" stroke-width="1.6"/>
+        <!-- half-string tsatsal node -->
+        <line x1="190" y1="614" x2="236" y2="614" stroke="#f4ecdd" stroke-opacity="0.5" stroke-dasharray="2 4"/>
+        <path d="M246 606 l8 8 -8 8 -8 -8z" fill="#120e0b" stroke="#f4ecdd" stroke-width="1.6"/>
+        <!-- underhand bow -->
+        <g class="f-line" fill="none" stroke-linecap="round">
+          <path d="M22 816 Q210 774 398 812" stroke-width="3"/>
+          <line x1="30" y1="834" x2="394" y2="829"/>
+          <rect x="16" y="816" width="34" height="22" rx="5"/>
+        </g>
+        <g class="f-lead" fill="none" stroke-dasharray="3 4">
+          <path d="M318 120 H246"/>
+          <path d="M96 540 H200"/>
+          <path d="M324 540 H220"/>
+          <path d="M96 434 H188"/>
+          <path d="M324 614 H256"/>
+          <path d="M60 756 L33 814"/>
+          <path d="M364 726 L314 760"/>
+        </g>
+        <g class="f-mark" text-anchor="middle">
+          <g><circle cx="334" cy="120" r="16"/><text x="334" y="127">1</text></g>
+          <g><circle cx="80" cy="540" r="16"/><text x="80" y="547">2</text></g>
+          <g><circle cx="340" cy="540" r="16"/><text x="340" y="547">3</text></g>
+          <g><circle cx="80" cy="434" r="16"/><text x="80" y="441">4</text></g>
+          <g><circle cx="340" cy="614" r="16"/><text x="340" y="621">5</text></g>
+          <g><circle cx="66" cy="740" r="16"/><text x="66" y="747">6</text></g>
+          <g><circle cx="378" cy="712" r="16"/><text x="378" y="719">7</text></g>
+        </g>
+      </svg>
+      <figcaption><span data-l="en" lang="en">Fig. 1 — drawn for this page.</span><span data-l="mn" lang="mn">Зураг 1 — энэ хуудсанд зориулж зурав.</span></figcaption>
+    </figure>
+
+    <div class="about-copy">
+      <p class="eyebrow reveal"><span data-l="en" lang="en">What it is</span><span data-l="mn" lang="mn">Энэ юу вэ</span></p>
+      <h2 id="about-title" class="h2 reveal"><span data-l="en" lang="en">A real instrument, rebuilt from its physics.</span><span data-l="mn" lang="mn">Хуурыг физикийн хуулиар нь дахин бүтээв.</span></h2>
+      <p class="lead reveal" data-l="en" lang="en">Morin Khuur Simulator is a free desktop app for Windows that models the Mongolian horsehead fiddle (<span lang="mn">морин хуур</span>). It is not a library of recordings: it is two strings, a bow and a soundbox that respond to how you play.</p>
+      <p class="lead reveal" data-l="mn" lang="mn">Морин хуурын симулятор бол Windows-д зориулсан үнэгүй програм. Энэ нь бичлэгийн сан биш — таны тоглолтод шууд хариулах хоёр утас, нум, хайрцгийн загвар юм.</p>
+
+      <ol class="anatomy">
+        <li class="reveal">
+          <span class="anat-num" aria-hidden="true">1</span>
+          <div><h3><span data-l="en" lang="en">The horse head</span><span data-l="mn" lang="mn">Морины толгой</span></h3>
+          <p><span data-l="en" lang="en">It crowns the neck and gives the instrument its name.</span><span data-l="mn" lang="mn">Хүзүүний оройд байх бөгөөд хуурт нэрээ өгсөн.</span></p></div>
+        </li>
+        <li class="reveal">
+          <span class="anat-num num-male" aria-hidden="true">2</span>
+          <div><h3><span data-l="en" lang="en">Arga — the male string <span lang="mn">(эр)</span></span><span data-l="mn" lang="mn">Арга — эр утас</span></h3>
+          <p><span data-l="en" lang="en">The lower string, shown in blue in the app.</span><span data-l="mn" lang="mn">Нам дуутай утас. Програмд цэнхэр өнгөөр харагдана.</span></p></div>
+        </li>
+        <li class="reveal">
+          <span class="anat-num num-female" aria-hidden="true">3</span>
+          <div><h3><span data-l="en" lang="en">Bilag — the female string <span lang="mn">(эм)</span></span><span data-l="mn" lang="mn">Билиг — эм утас</span></h3>
+          <p><span data-l="en" lang="en">The higher string, shown in orange.</span><span data-l="mn" lang="mn">Өндөр дуутай утас. Улбар шар өнгөөр харагдана.</span></p></div>
+        </li>
+        <li class="reveal">
+          <span class="anat-num" aria-hidden="true">4</span>
+          <div><h3><span data-l="en" lang="en">Stopped from the side with the fingernails</span><span data-l="mn" lang="mn">Хумсаар хажуунаас нь дарна</span></h3>
+          <p><span data-l="en" lang="en">The app’s side-stop pads sit where the fingernail meets the string — at the physically correct positions.</span><span data-l="mn" lang="mn">Програмын дарах цэгүүд хумс утсанд хүрэх, физикт яг тохирсон байрлалдаа бий.</span></p></div>
+        </li>
+        <li class="reveal">
+          <span class="anat-num" aria-hidden="true">5</span>
+          <div><h3><span data-l="en" lang="en"><i>Tsatsal</i> harmonics</span><span data-l="mn" lang="mn">Цацал</span></h3>
+          <p><span data-l="en" lang="en">The natural harmonic nodes (◇), marked along both strings.</span><span data-l="mn" lang="mn">Хоёр утасны дагуух цацлын цэгүүдийг (◇) тэмдэглэсэн.</span></p></div>
+        </li>
+        <li class="reveal">
+          <span class="anat-num" aria-hidden="true">6</span>
+          <div><h3><span data-l="en" lang="en">An underhand bow — <i>tatakh</i> &amp; <i>tülekhe</i></span><span data-l="mn" lang="mn">Доогуур атгадаг нум — татах, түлхэх</span></h3>
+          <p><span data-l="en" lang="en">Pull and push strokes. Bow speed sets the loudness; the bow’s height sets the hair pressure.</span><span data-l="mn" lang="mn">Нумыг татаж, түлхэж хөдөлгөнө. Нумын хурд дууны чангыг, өндөр нь хялгасны даралтыг тодорхойлно.</span></p></div>
+        </li>
+        <li class="reveal">
+          <span class="anat-num" aria-hidden="true">7</span>
+          <div><h3><span data-l="en" lang="en">The soundbox</span><span data-l="mn" lang="mn">Хайрцаг</span></h3>
+          <p><span data-l="en" lang="en">A wooden top, or a traditional hide one.</span><span data-l="mn" lang="mn">Модон цартай, эсвэл уламжлалт арьсан цартай.</span></p></div>
+        </li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="container fig2-row">
+    <figure class="strings-figure reveal">
+      <svg viewBox="0 0 600 200" class="strings-svg" role="img" aria-labelledby="fig2-title">
+        <title id="fig2-title" data-text-en="The two strings drawn horizontally, with side-stop pads and tsatsal nodes" data-text-mn="Хоёр утас, дарах цэгүүд, цацлын цэгүүд">The two strings drawn horizontally, with side-stop pads and tsatsal nodes</title>
+        <defs><filter id="sGlow" filterUnits="userSpaceOnUse" x="0" y="0" width="600" height="200"><feGaussianBlur stdDeviation="4"/></filter></defs>
+        <rect x="34" y="62" width="8" height="104" rx="2" fill="#f0dcb4" opacity="0.9"/>
+        <rect x="556" y="62" width="8" height="104" rx="2" fill="#f0dcb4" opacity="0.9"/>
+        <g stroke="#cbbba3" stroke-opacity="0.35" stroke-dasharray="2 4">
+          <line x1="144" y1="36" x2="144" y2="150"/><line x1="170" y1="36" x2="170" y2="150"/><line x1="213" y1="36" x2="213" y2="150"/><line x1="300" y1="36" x2="300" y2="150"/>
+        </g>
+        <g fill="#120e0b" stroke="#f4ecdd" stroke-width="1.6">
+          <path d="M144 22 l8 8 -8 8 -8 -8z"/><path d="M170 22 l8 8 -8 8 -8 -8z"/><path d="M213 22 l8 8 -8 8 -8 -8z"/><path d="M300 22 l8 8 -8 8 -8 -8z"/>
+        </g>
+        <g filter="url(#sGlow)">
+          <line x1="38" y1="92" x2="560" y2="92" stroke="#5aa8ff" stroke-width="6"/>
+          <line x1="38" y1="136" x2="560" y2="136" stroke="#ff9b3d" stroke-width="5"/>
+        </g>
+        <line x1="38" y1="92" x2="560" y2="92" stroke="#fff4df" stroke-width="2.6"/>
+        <line x1="38" y1="136" x2="560" y2="136" stroke="#fff4df" stroke-width="2"/>
+        <g fill="#173252" stroke="#5aa8ff" stroke-width="1.6">
+          <rect x="91.7" y="82" width="10" height="20" rx="5"/><rect x="142.3" y="82" width="10" height="20" rx="5"/><rect x="165.4" y="82" width="10" height="20" rx="5"/><rect x="207.9" y="82" width="10" height="20" rx="5"/><rect x="245.8" y="82" width="10" height="20" rx="5"/><rect x="263.2" y="82" width="10" height="20" rx="5"/><rect x="295" y="82" width="10" height="20" rx="5"/>
+        </g>
+        <g fill="#4a2a0c" stroke="#ff9b3d" stroke-width="1.6">
+          <rect x="91.7" y="126" width="10" height="20" rx="5"/><rect x="142.3" y="126" width="10" height="20" rx="5"/><rect x="165.4" y="126" width="10" height="20" rx="5"/><rect x="207.9" y="126" width="10" height="20" rx="5"/><rect x="245.8" y="126" width="10" height="20" rx="5"/><rect x="279.6" y="126" width="10" height="20" rx="5"/><rect x="295" y="126" width="10" height="20" rx="5" fill="#ff9b3d"/>
+        </g>
+        <path d="M478 40 Q506 114 478 190" fill="none" stroke="#c9873f" stroke-width="5" stroke-linecap="round"/>
+        <line x1="492" y1="44" x2="492" y2="186" stroke="#f3e7cf" stroke-width="2.2" stroke-linecap="round"/>
+      </svg>
+      <figcaption><span data-l="en" lang="en">Fig. 2 — the two strings as the Playground shows them: side-stop pads and <i>tsatsal</i> nodes (◇).</span><span data-l="mn" lang="mn">Зураг 2 — Playground дээрх хоёр утас: дарах цэгүүд, цацлын цэгүүд (◇).</span></figcaption>
+    </figure>
+    <p class="tunings reveal">
+      <span data-l="en" lang="en"><b>Tunings:</b> standard F⁠–⁠B<span class="flat">♭</span> (Mongolia), Inner Mongolian G⁠–⁠C and fifth tunings — on a wooden or hide soundboard.</span>
+      <span data-l="mn" lang="mn"><b>Хөг:</b> стандарт F⁠–⁠B<span class="flat">♭</span> (Монгол), Өвөр Монголын G⁠–⁠C, квинтийн хөг — модон эсвэл арьсан цартай.</span>
+    </p>
+  </div>
+</section>
+
+<div class="khee" aria-hidden="true"></div>
+
+<!-- ============ Five parts ============ -->
+<section class="section parts" id="features" aria-labelledby="parts-title">
+  <div class="container">
+    <header class="section-head">
+      <p class="eyebrow reveal"><span data-l="en" lang="en">Five parts, one instrument</span><span data-l="mn" lang="mn">Нэг хуур, таван хэсэг</span></p>
+      <h2 id="parts-title" class="h2 reveal"><span data-l="en" lang="en">Play it. Groove with it. Test songs, compare, record.</span><span data-l="mn" lang="mn">Тогло. Хэмнэл зохио. Дуугаа шалга, харьцуул, бичлэг хий.</span></h2>
+      <p class="lead reveal"><span data-l="en" lang="en">The same modelled morin khuur plays in all five parts of the app.</span><span data-l="mn" lang="mn">Програмын таван хэсэг бүгдэд нэг л загварчилсан морин хуур эгшиглэнэ.</span></p>
+    </header>
+
+    <article class="part part-feature reveal" aria-labelledby="p1-title">
+      <div class="part-text">
+        <p class="part-num">01 <span class="part-app" data-l="mn" lang="en">Playground</span></p>
+        <h3 id="p1-title" class="h3"><span data-l="en" lang="en">Playground</span><span data-l="mn" lang="mn">Тоглох талбар</span></h3>
+        <p data-l="en" lang="en">Play the two strings with the mouse, your computer keyboard or a MIDI keyboard. Side-stop pads sit at the physically correct positions, <i>tsatsal</i> nodes mark the harmonics, and the bow pad turns speed into loudness and height into hair pressure.</p>
+        <p data-l="mn" lang="mn">Хоёр утсаа хулгана, компьютерийн гар эсвэл MIDI гараар тогло. Дарах цэгүүд утасны физикт тохирсон байрлалдаа, цацлын цэгүүд тэмдэглэгдсэн. Нумын талбар дээр нумын хурд дууны чангыг, өндөр нь хялгасны даралтыг өгнө.</p>
+        <ul class="chips">
+          <li><span data-l="en" lang="en">Pizzicato</span><span data-l="mn" lang="mn">Пиццикато</span></li>
+          <li><span data-l="en" lang="en">Drone</span><span data-l="mn" lang="mn">Бурдон</span></li>
+          <li><span data-l="en" lang="en">Col legno</span><span data-l="mn" lang="mn">Нумын модоор цохих</span></li>
+          <li><span data-l="en" lang="en">Body tap</span><span data-l="mn" lang="mn">Хайрцаг тогших</span></li>
+          <li><span data-l="en" lang="en">Slap</span><span data-l="mn" lang="mn">Утас алгадах</span></li>
+          <li><span data-l="en" lang="en">Tsokhilgo</span><span data-l="mn" lang="mn">Цохилго</span></li>
+          <li><span data-l="en" lang="en">Thumb · erkhii darakh</span><span data-l="mn" lang="mn">Эрхий дарах</span></li>
+          <li><span data-l="en" lang="en">Whinny</span><span data-l="mn" lang="mn">Янцгаалт</span></li>
+          <li><span data-l="en" lang="en">Tremolo</span><span data-l="mn" lang="mn">Тремоло</span></li>
+          <li class="chip-accent"><span data-l="en" lang="en">Quick record to WAV</span><span data-l="mn" lang="mn">WAV-д шууд бичих</span></li>
+        </ul>
+      </div>
+      <div class="frame">
+        <svg class="corner tl" aria-hidden="true"><use href="#horn"/></svg>
+        <svg class="corner tr" aria-hidden="true"><use href="#horn"/></svg>
+        <svg class="corner bl" aria-hidden="true"><use href="#horn"/></svg>
+        <svg class="corner br" aria-hidden="true"><use href="#horn"/></svg>
+        <a class="shot shot-feature" href="assets/screens/playground-2880.webp" data-lightbox>
+          <img src="assets/screens/playground-1440.webp"
+               srcset="assets/screens/playground-720.webp 720w, assets/screens/playground-1440.webp 1440w, assets/screens/playground-2880.webp 2880w"
+               sizes="(min-width: 1240px) 760px, (min-width: 1000px) 62vw, calc(100vw - 32px)"
+               width="2880" height="1800" loading="lazy" decoding="async"
+               alt="Playground screen: the morin khuur seen from the side, with side-stop pads on the blue male and orange female strings, technique buttons and the bow gesture pad."
+               data-alt-en="Playground screen: the morin khuur seen from the side, with side-stop pads on the blue male and orange female strings, technique buttons and the bow gesture pad."
+               data-alt-mn="Playground цонх: хажуугаас харсан морин хуур, цэнхэр эр утас, улбар шар эм утсан дээрх дарах цэгүүд, техникийн товчлуурууд, нумын талбар.">
+          <span class="shot-zoom" aria-hidden="true"><svg width="18" height="18"><use href="#i-zoom"/></svg></span>
+        </a>
+      </div>
+    </article>
+
+    <div class="parts-grid">
+      <article class="part part-card reveal" aria-labelledby="p2-title">
+        <a class="shot" href="assets/screens/beatmaker-2880.webp" data-lightbox>
+          <img src="assets/screens/beatmaker-720.webp"
+               srcset="assets/screens/beatmaker-720.webp 720w, assets/screens/beatmaker-1440.webp 1440w, assets/screens/beatmaker-2880.webp 2880w"
+               sizes="(min-width: 1240px) 588px, (min-width: 820px) calc(50vw - 44px), calc(100vw - 32px)"
+               width="2880" height="1800" loading="lazy" decoding="async"
+               alt="Beat Maker screen: a 4×4 grid of technique and percussion pads beside a step sequencer playing a Joroo amble groove."
+               data-alt-en="Beat Maker screen: a 4×4 grid of technique and percussion pads beside a step sequencer playing a Joroo amble groove."
+               data-alt-mn="Beat Maker цонх: техник, цохиврын 4×4 дэвсгэр, жороо хэмнэл тоглож буй алхамт секвенсор.">
+          <span class="shot-zoom" aria-hidden="true"><svg width="18" height="18"><use href="#i-zoom"/></svg></span>
+        </a>
+        <div class="part-text">
+          <p class="part-num">02 <span class="part-app" data-l="mn" lang="en">Beat Maker</span></p>
+          <h3 id="p2-title" class="h3"><span data-l="en" lang="en">Beat Maker</span><span data-l="mn" lang="mn">Хэмнэл бүтээгч</span></h3>
+          <p data-l="en" lang="en">A 4×4 grid of fiddle techniques and percussion, and a step sequencer with horse-gait grooves — the <i>Joroo</i> amble, the <i>Töwöö</i> trot and gallops. Export to WAV or MIDI.</p>
+          <p data-l="mn" lang="mn">Хуурын техник, цохиврын 4×4 дэвсгэр, морины явдлын хэмнэлтэй алхамт секвенсор — жороо, төвөө, давхиа. WAV болон MIDI файлаар гаргана.</p>
+          <ul class="chips">
+            <li><span data-l="en" lang="en">4×4 pads</span><span data-l="mn" lang="mn">4×4 дэвсгэр</span></li>
+            <li><span data-l="en" lang="en">Joroo amble</span><span data-l="mn" lang="mn">Жороо</span></li>
+            <li><span data-l="en" lang="en">Töwöö trot</span><span data-l="mn" lang="mn">Төвөө</span></li>
+            <li><span data-l="en" lang="en">Gallops</span><span data-l="mn" lang="mn">Давхиа</span></li>
+            <li class="chip-accent"><span data-l="en" lang="en">WAV + MIDI export</span><span data-l="mn" lang="mn">WAV, MIDI экспорт</span></li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="part part-card reveal" aria-labelledby="p3-title">
+        <a class="shot" href="assets/screens/songtester-2880.webp" data-lightbox>
+          <img src="assets/screens/songtester-720.webp"
+               srcset="assets/screens/songtester-720.webp 720w, assets/screens/songtester-1440.webp 1440w, assets/screens/songtester-2880.webp 2880w"
+               sizes="(min-width: 1240px) 588px, (min-width: 820px) calc(50vw - 44px), calc(100vw - 32px)"
+               width="2880" height="1800" loading="lazy" decoding="async"
+               alt="Song Tester screen: an etude in numbered notation and staff above the instrument, with a verification report listing each note."
+               data-alt-en="Song Tester screen: an etude in numbered notation and staff above the instrument, with a verification report listing each note."
+               data-alt-mn="Song Tester цонх: тоон нот, таван шугамын нотоор бичсэн этюд, хуур, нот бүрийн шалгалтын тайлан.">
+          <span class="shot-zoom" aria-hidden="true"><svg width="18" height="18"><use href="#i-zoom"/></svg></span>
+        </a>
+        <div class="part-text">
+          <p class="part-num">03 <span class="part-app" data-l="mn" lang="en">Song Tester</span></p>
+          <h3 id="p3-title" class="h3"><span data-l="en" lang="en">Song Tester</span><span data-l="mn" lang="mn">Дуу шалгагч</span></h3>
+          <p data-l="en" lang="en">Numbered notation (jianpu) and staff. It checks that every note is physically playable, measures each note’s pitch, and plays with finger and bow markers. Import MIDI or MusicXML — a score downloaded from MuseScore, for example — and it is arranged for the instrument automatically.</p>
+          <p data-l="mn" lang="mn">Тоон нот (цзяньпу) болон таван шугамын нот. Нот бүрийг хуур дээр бодитоор тоглох боломжтой эсэхийг шалгаж, авиа бүрийн өндрийг хэмжээд, хуруу, нумын тэмдэглэгээтэй тоглуулна. MIDI эсвэл MusicXML (жишээ нь MuseScore-оос татсан нот) оруулахад хуурт автоматаар тааруулж буулгана.</p>
+          <ul class="chips">
+            <li><span data-l="en" lang="en">Jianpu + staff</span><span data-l="mn" lang="mn">Тоон нот + таван шугам</span></li>
+            <li><span data-l="en" lang="en">Playability check</span><span data-l="mn" lang="mn">Тоглох боломжийн шалгалт</span></li>
+            <li><span data-l="en" lang="en">Pitch per note</span><span data-l="mn" lang="mn">Авиа бүрийн өндөр</span></li>
+            <li class="chip-accent"><span data-l="en" lang="en">MIDI &amp; MusicXML import</span><span data-l="mn" lang="mn">MIDI, MusicXML импорт</span></li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="part part-card reveal" aria-labelledby="p4-title">
+        <a class="shot" href="assets/screens/playlist-2880.webp" data-lightbox>
+          <img src="assets/screens/playlist-720.webp"
+               srcset="assets/screens/playlist-720.webp 720w, assets/screens/playlist-1440.webp 1440w, assets/screens/playlist-2880.webp 2880w"
+               sizes="(min-width: 1240px) 588px, (min-width: 820px) calc(50vw - 44px), calc(100vw - 32px)"
+               width="2880" height="1800" loading="lazy" decoding="async"
+               alt="Playlist screen: popular morin khuur pieces with links to original performances, an A/B comparison and a feedback panel."
+               data-alt-en="Playlist screen: popular morin khuur pieces with links to original performances, an A/B comparison and a feedback panel."
+               data-alt-mn="Playlist цонх: алдартай бүтээлүүдийн жагсаалт, анхны тоглолтын холбоос, A/B харьцуулалт, санал бичих хэсэг.">
+          <span class="shot-zoom" aria-hidden="true"><svg width="18" height="18"><use href="#i-zoom"/></svg></span>
+        </a>
+        <div class="part-text">
+          <p class="part-num">04 <span class="part-app" data-l="mn" lang="en">Playlist</span></p>
+          <h3 id="p4-title" class="h3"><span data-l="en" lang="en">Playlist</span><span data-l="mn" lang="mn">Дууны жагсаалт</span></h3>
+          <p data-l="en" lang="en">Popular morin khuur pieces — <i>Jonon Khar</i>, <i>Ertnii Saikhan</i>, <i>Uyakhan Zambuu</i>, <i>Wan Ma Benteng</i>, The HU and more — with links to the original performances. Compare our version A/B with your own copy of a recording, run the automatic comparison or a blind listening test, and export your feedback.</p>
+          <p data-l="mn" lang="mn">«Жонон хар», «Эртний сайхан», «Уяхан замбуу», «Wan Ma Benteng», The HU зэрэг алдартай бүтээлүүд анхны тоглолтын холбоосын хамт. Өөрт байгаа бичлэгтэйгээ манай хувилбарыг A/B харьцуулах, автомат харьцуулалт, аль нь болохыг мэдэлгүй сонсох сохор тест хийж, сэтгэгдлээ экспортлоорой.</p>
+          <ul class="chips">
+            <li><span data-l="en" lang="en">Links to originals</span><span data-l="mn" lang="mn">Анхны тоглолтын холбоос</span></li>
+            <li><span data-l="en" lang="en">A/B with your recording</span><span data-l="mn" lang="mn">Өөрийн бичлэгтэй A/B</span></li>
+            <li><span data-l="en" lang="en">Blind test</span><span data-l="mn" lang="mn">Сохор тест</span></li>
+            <li class="chip-accent"><span data-l="en" lang="en">Export feedback</span><span data-l="mn" lang="mn">Сэтгэгдэл экспортлох</span></li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="part part-card reveal" aria-labelledby="p5-title">
+        <a class="shot" href="assets/screens/studio-2880.webp" data-lightbox>
+          <img src="assets/screens/studio-720.webp"
+               srcset="assets/screens/studio-720.webp 720w, assets/screens/studio-1440.webp 1440w, assets/screens/studio-2880.webp 2880w"
+               sizes="(min-width: 1240px) 588px, (min-width: 820px) calc(50vw - 44px), calc(100vw - 32px)"
+               width="2880" height="1800" loading="lazy" decoding="async"
+               alt="Studio screen: four coloured tracks — lead, rhythm, tovshuur and khöömii — with a mixer and the bow track."
+               data-alt-en="Studio screen: four coloured tracks — lead, rhythm, tovshuur and khöömii — with a mixer and the bow track."
+               data-alt-mn="Studio цонх: гоцлол, хэмнэл, товшуур, хөөмийн дөрвөн өнгөт зам, микшер.">
+          <span class="shot-zoom" aria-hidden="true"><svg width="18" height="18"><use href="#i-zoom"/></svg></span>
+        </a>
+        <div class="part-text">
+          <p class="part-num">05 <span class="part-app" data-l="mn" lang="en">Studio</span></p>
+          <h3 id="p5-title" class="h3"><span data-l="en" lang="en">Studio</span><span data-l="mn" lang="mn">Студи</span></h3>
+          <p data-l="en" lang="en">Four tracks — lead, rhythm, <i>tovshuur</i> lute and <i>khöömii</i> drone — with a mixer and WAV export.</p>
+          <p data-l="mn" lang="mn">Гоцлол, хэмнэл, товшуур, хөөмийн бурдон гэсэн дөрвөн зам, микшер, WAV экспорттой.</p>
+          <ul class="chips">
+            <li><span data-l="en" lang="en">Lead</span><span data-l="mn" lang="mn">Гоцлол</span></li>
+            <li><span data-l="en" lang="en">Rhythm</span><span data-l="mn" lang="mn">Хэмнэл</span></li>
+            <li><span data-l="en" lang="en">Tovshuur</span><span data-l="mn" lang="mn">Товшуур</span></li>
+            <li><span data-l="en" lang="en">Khöömii</span><span data-l="mn" lang="mn">Хөөмий</span></li>
+            <li class="chip-accent"><span data-l="en" lang="en">Mixer + WAV export</span><span data-l="mn" lang="mn">Микшер, WAV экспорт</span></li>
+          </ul>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ Listen ============ -->
+<section class="section listen" id="listen" aria-labelledby="listen-title">
+  <div class="container">
+    <div class="divider-knot reveal" aria-hidden="true"><svg><use href="#ulzii"/></svg></div>
+    <header class="section-head">
+      <p class="eyebrow reveal"><span data-l="en" lang="en">Hear it</span><span data-l="mn" lang="mn">Сонсоорой</span></p>
+      <h2 id="listen-title" class="h2 reveal"><span data-l="en" lang="en">Every note here was computed, not recorded.</span><span data-l="mn" lang="mn">Энд сонсогдох нот бүрийг бичиж аваагүй — тооцоолж гаргасан.</span></h2>
+      <p class="lead reveal"><span data-l="en" lang="en">These clips were rendered by the app itself, from the project’s own original etudes. Headphones help.</span><span data-l="mn" lang="mn">Эдгээр дууг програм өөрөө, төслийн өөрийн зохиосон этюдүүдээр үүсгэсэн. Чихэвчээр сонсвол илүү тод.</span></p>
+    </header>
+
+    <div class="ab reveal" data-player data-ab>
+      <div class="ab-info">
+        <p class="kicker"><span class="badge">A/B</span> <span class="synth-tag"><span data-l="en" lang="en">Synthesised by the app</span><span data-l="mn" lang="mn">Програмаар нийлэгжүүлсэн</span></span></p>
+        <h3 class="h3 p-title" id="ab-title"><span data-l="en" lang="en">Same notes, two styles</span><span data-l="mn" lang="mn">Ижил нот, хоёр хэв маяг</span></h3>
+        <p data-l="en" lang="en">One long-song etude, played in <b>Khalkh stage</b> style and in <b>long-song (<i>urtiin duu</i>)</b> style. Switch while it plays: the notes are identical — the style adds the ornaments, vibrato and bowing.</p>
+        <p data-l="mn" lang="mn">Нэг л уртын дууны этюдийг <b>Халхын тайзны хэв маяг</b> болон <b>уртын дууны хэв маягаар</b> тоглуулав. Тоглож байхад нь сэлгээд сонсоорой: нот нь яг адилхан, харин хэв маяг нь чимэглэл, вибрато, нумын хөдөлгөөнийг нэмдэг.</p>
+        <fieldset class="ab-switch">
+          <legend class="sr-only"><span data-l="en" lang="en">Playing style</span><span data-l="mn" lang="mn">Тоглолтын хэв маяг</span></legend>
+          <label><input type="radio" name="ab-style" value="0" checked><span><b>A</b> <span data-l="en" lang="en">Khalkh stage</span><span data-l="mn" lang="mn">Халхын тайз</span> <small>0:20</small></span></label>
+          <label><input type="radio" name="ab-style" value="1"><span><b>B</b> <span data-l="en" lang="en">Long song · urtiin duu</span><span data-l="mn" lang="mn">Уртын дуу</span> <small>0:25</small></span></label>
+        </fieldset>
+      </div>
+      <div class="ab-player">
+        <button class="p-play p-play-lg" type="button" aria-label="Play">
+          <svg class="i-play" width="28" height="28" aria-hidden="true"><use href="#i-play"/></svg>
+          <svg class="i-pause" width="28" height="28" aria-hidden="true"><use href="#i-pause"/></svg>
+        </button>
+        <div class="p-main">
+          <div class="p-wave" data-wave></div>
+          <div class="p-time"><span class="p-now">0:00</span><span class="p-style-name"></span><span class="p-total">0:20</span></div>
+        </div>
+      </div>
+      <div class="native">
+        <p><b>A</b> — <span data-l="en" lang="en">Khalkh stage</span><span data-l="mn" lang="mn">Халхын тайз</span></p>
+        <audio controls preload="none" src="assets/audio/long-song-stage.mp3" data-file="long-song-stage.mp3" data-duration="19.64"></audio>
+        <p><b>B</b> — <span data-l="en" lang="en">Long song · urtiin duu</span><span data-l="mn" lang="mn">Уртын дуу</span></p>
+        <audio controls preload="none" src="assets/audio/long-song-urtiin-duu.mp3" data-file="long-song-urtiin-duu.mp3" data-duration="25.49"></audio>
+      </div>
+    </div>
+
+    <div class="tracks">
+      <article class="track reveal" data-player>
+        <button class="p-play" type="button" aria-label="Play">
+          <svg class="i-play" width="22" height="22" aria-hidden="true"><use href="#i-play"/></svg>
+          <svg class="i-pause" width="22" height="22" aria-hidden="true"><use href="#i-pause"/></svg>
+        </button>
+        <div class="track-body">
+          <h3 class="p-title"><span data-l="en" lang="en">Hide soundboard</span><span data-l="mn" lang="mn">Арьсан цартай хуур</span></h3>
+          <p class="track-desc"><span data-l="en" lang="en">The long-song etude on a traditional hide-covered soundbox instead of a wooden top.</span><span data-l="mn" lang="mn">Уртын дууны этюд — модон царын оронд уламжлалт арьсан цартай хайрцгаар.</span></p>
+          <div class="p-wave" data-wave></div>
+          <div class="p-time"><span class="p-now">0:00</span><span class="p-total">0:25</span></div>
+        </div>
+        <div class="native"><audio controls preload="none" src="assets/audio/long-song-hide-top.mp3" data-file="long-song-hide-top.mp3" data-duration="25.49"></audio></div>
+      </article>
+
+      <article class="track reveal" data-player>
+        <button class="p-play" type="button" aria-label="Play">
+          <svg class="i-play" width="22" height="22" aria-hidden="true"><use href="#i-play"/></svg>
+          <svg class="i-pause" width="22" height="22" aria-hidden="true"><use href="#i-pause"/></svg>
+        </button>
+        <div class="track-body">
+          <h3 class="p-title"><span data-l="en" lang="en">Joroo amble, <i>tatlaga</i> style</span><span data-l="mn" lang="mn">Жороо, татлагын хэв маяг</span></h3>
+          <p class="track-desc"><span data-l="en" lang="en">An amble rhythm in <i>tatlaga</i> style, opening with <i>om zee</i>.</span><span data-l="mn" lang="mn">Жороо явдлын хэмнэл татлагын хэв маягаар, «ом зээ»-гээр эхэлнэ.</span></p>
+          <div class="p-wave" data-wave></div>
+          <div class="p-time"><span class="p-now">0:00</span><span class="p-total">0:19</span></div>
+        </div>
+        <div class="native"><audio controls preload="none" src="assets/audio/joroo-amble-tatlaga.mp3" data-file="joroo-amble-tatlaga.mp3" data-duration="18.55"></audio></div>
+      </article>
+
+      <article class="track reveal" data-player>
+        <button class="p-play" type="button" aria-label="Play">
+          <svg class="i-play" width="22" height="22" aria-hidden="true"><use href="#i-play"/></svg>
+          <svg class="i-pause" width="22" height="22" aria-hidden="true"><use href="#i-pause"/></svg>
+        </button>
+        <div class="track-body">
+          <h3 class="p-title"><span data-l="en" lang="en">Open strings</span><span data-l="mn" lang="mn">Сул утас</span></h3>
+          <p class="track-desc"><span data-l="en" lang="en">The male and female strings, unstopped.</span><span data-l="mn" lang="mn">Эр, эм хоёр утас — дарахгүйгээр.</span></p>
+          <div class="p-wave" data-wave></div>
+          <div class="p-time"><span class="p-now">0:00</span><span class="p-total">0:16</span></div>
+        </div>
+        <div class="native"><audio controls preload="none" src="assets/audio/open-strings.mp3" data-file="open-strings.mp3" data-duration="15.83"></audio></div>
+      </article>
+
+      <article class="track reveal" data-player>
+        <button class="p-play" type="button" aria-label="Play">
+          <svg class="i-play" width="22" height="22" aria-hidden="true"><use href="#i-play"/></svg>
+          <svg class="i-pause" width="22" height="22" aria-hidden="true"><use href="#i-pause"/></svg>
+        </button>
+        <div class="track-body">
+          <h3 class="p-title"><span data-l="en" lang="en">Hooves and the whinny</span><span data-l="mn" lang="mn">Төвөргөөн ба янцгаалт</span></h3>
+          <p class="track-desc"><span data-l="en" lang="en">Gallop percussion and the horse whinny.</span><span data-l="mn" lang="mn">Давхианы туурайн төвөргөөн, морины янцгаалт.</span></p>
+          <div class="p-wave" data-wave></div>
+          <div class="p-time"><span class="p-now">0:00</span><span class="p-total">0:12</span></div>
+        </div>
+        <div class="native"><audio controls preload="none" src="assets/audio/hooves-whinny.mp3" data-file="hooves-whinny.mp3" data-duration="12.1"></audio></div>
+      </article>
+    </div>
+    <p class="listen-note reveal"><span data-l="en" lang="en">All clips: rendered by Morin Khuur Simulator from original etudes written for the project — not traditional tunes, and no recordings of real instruments.</span><span data-l="mn" lang="mn">Бүх дуу: Морин хуурын симулятор төсөлд зориулж бичсэн этюдүүдээс үүсгэсэн. Уламжлалт ая биш, жинхэнэ хуурын бичлэг ч биш.</span></p>
+  </div>
+</section>
+
+<!-- ============ How the sound is made ============ -->
+<section class="section how" id="how" aria-labelledby="how-title">
+  <div class="container">
+    <header class="section-head">
+      <p class="eyebrow reveal"><span data-l="en" lang="en">How the sound is made</span><span data-l="mn" lang="mn">Дуу хэрхэн үүсдэг вэ</span></p>
+      <h2 id="how-title" class="h2 reveal"><span data-l="en" lang="en">No samples. A string, a bow and a soundbox — computed as you play.</span><span data-l="mn" lang="mn">Бичлэг огт үгүй. Утас, нум, хайрцаг — тоглох агшинд тооцоологдоно.</span></h2>
+      <p class="lead reveal" data-l="en" lang="en">Instead of replaying recordings, the app simulates the instrument itself. A model of a bowed horsehair string — a digital waveguide with bow friction — drives a model of the soundbox, tuned from published acoustic measurements by Bulanov.</p>
+      <p class="lead reveal" data-l="mn" lang="mn">Програм бичлэг тоглуулдаггүй, харин хуурыг өөрийг нь загварчилдаг. Нумаар татсан хялгасан утасны загвар — нумын үрэлттэй дижитал долгион хөтлүүр — хуурын хайрцгийн загварыг хөдөлгөнө. Хайрцгийг Булановын хэвлэгдсэн акустик хэмжилтээр тааруулсан.</p>
+    </header>
+
+    <ol class="pipeline">
+      <li class="reveal">
+        <span class="pipe-icon" aria-hidden="true"><svg viewBox="0 0 48 48" width="40" height="40"><path d="M6 30 Q24 18 42 28" fill="none" stroke="#f6a930" stroke-width="3" stroke-linecap="round"/><line x1="7" y1="35" x2="41" y2="34" stroke="#f3e7cf" stroke-width="2" stroke-linecap="round"/></svg></span>
+        <h3><span data-l="en" lang="en">Bow</span><span data-l="mn" lang="mn">Нум</span></h3>
+        <p><span data-l="en" lang="en">Friction between hair and string sets it moving; bow speed and pressure shape the note.</span><span data-l="mn" lang="mn">Нумын хялгас утсыг үрж хөдөлгөнө; нумын хурд, даралт авианы өнгийг тодорхойлно.</span></p>
+      </li>
+      <li class="reveal">
+        <span class="pipe-icon" aria-hidden="true"><svg viewBox="0 0 48 48" width="40" height="40"><path d="M4 24 C10 14 14 14 18 24 S26 34 30 24 S38 14 44 24" fill="none" stroke="#5aa8ff" stroke-width="3" stroke-linecap="round"/><path d="M4 28 C10 36 14 36 18 28 S26 18 30 28 S38 36 44 28" fill="none" stroke="#ff9b3d" stroke-width="2.4" stroke-linecap="round" opacity="0.8"/></svg></span>
+        <h3><span data-l="en" lang="en">Horsehair string</span><span data-l="mn" lang="mn">Хялгасан утас</span></h3>
+        <p><span data-l="en" lang="en">A digital waveguide: waves travel along the string and reflect at both ends.</span><span data-l="mn" lang="mn">Дижитал долгион хөтлүүр: долгион утсаар гүйж, хоёр үзүүрээсээ ойдог.</span></p>
+      </li>
+      <li class="reveal">
+        <span class="pipe-icon" aria-hidden="true"><svg viewBox="0 0 48 48" width="40" height="40"><path d="M14 8 H34 L40 42 H8 Z" fill="none" stroke="#e0a263" stroke-width="3" stroke-linejoin="round"/><path d="M17 18 c4 -4 8 0 4 6 c-4 6 0 10 4 6" fill="none" stroke="#e0a263" stroke-width="2" stroke-linecap="round"/></svg></span>
+        <h3><span data-l="en" lang="en">Soundbox</span><span data-l="mn" lang="mn">Хайрцаг</span></h3>
+        <p><span data-l="en" lang="en">The wooden top’s resonances are tuned from published measurements; a traditional hide top is there too.</span><span data-l="mn" lang="mn">Модон царын резонансыг хэвлэгдсэн хэмжилтээр тааруулсан; уламжлалт арьсан цар ч бий.</span></p>
+      </li>
+      <li class="reveal">
+        <span class="pipe-icon" aria-hidden="true"><svg viewBox="0 0 48 48" width="40" height="40"><path d="M8 19 H16 L26 10 V38 L16 29 H8 Z" fill="none" stroke="#f4ecdd" stroke-width="3" stroke-linejoin="round"/><path d="M32 18 q5 6 0 12 M37 13 q9 11 0 22" fill="none" stroke="#f6a930" stroke-width="2.6" stroke-linecap="round"/></svg></span>
+        <h3><span data-l="en" lang="en">Your speakers</span><span data-l="mn" lang="mn">Таны чанга яригч</span></h3>
+        <p><span data-l="en" lang="en">All of it in real time, on your own computer.</span><span data-l="mn" lang="mn">Бүгд бодит хугацаанд, таны компьютер дээр.</span></p>
+      </li>
+    </ol>
+
+    <div class="accuracy">
+      <div class="acc-card reveal">
+        <p class="acc-num">≈<span data-l="en" lang="en">0.2</span><span data-l="mn" lang="mn">0,2</span><span class="acc-unit">¢</span></p>
+        <svg class="acc-viz" viewBox="0 0 300 64" aria-hidden="true">
+          <line x1="10" y1="34" x2="290" y2="34" stroke="#a8957d" stroke-opacity="0.5"/>
+          <g stroke="#a8957d" stroke-opacity="0.6"><line x1="10" y1="27" x2="10" y2="41"/><line x1="38" y1="30" x2="38" y2="38"/><line x1="66" y1="30" x2="66" y2="38"/><line x1="94" y1="30" x2="94" y2="38"/><line x1="122" y1="30" x2="122" y2="38"/><line x1="178" y1="30" x2="178" y2="38"/><line x1="206" y1="30" x2="206" y2="38"/><line x1="234" y1="30" x2="234" y2="38"/><line x1="262" y1="30" x2="262" y2="38"/><line x1="290" y1="27" x2="290" y2="41"/></g>
+          <rect x="144.4" y="20" width="11.2" height="28" rx="2" fill="#f6a930" fill-opacity="0.35" stroke="#f6a930"/>
+          <line x1="150" y1="14" x2="150" y2="54" stroke="#ffc867" stroke-width="2"/>
+          <g fill="#a8957d" font-size="11" text-anchor="middle"><text x="10" y="60">−5¢</text><text x="150" y="10">0</text><text x="290" y="60">+5¢</text></g>
+        </svg>
+        <p><span data-l="en" lang="en">Bowed notes are in tune to about 0.2 cents on average. A cent is 1/100 of a semitone.</span><span data-l="mn" lang="mn">Нумаар татсан авиа дунджаар 0,2 цент орчим нарийвчлалтай. Нэг цент нь хагас тоны 1/100.</span></p>
+      </div>
+      <div class="acc-card reveal">
+        <p class="acc-num acc-check" aria-hidden="true"><svg viewBox="0 0 48 48" width="52" height="52"><circle cx="24" cy="24" r="21" fill="none" stroke="#f6a930" stroke-width="2.5" opacity="0.5"/><path d="M14 25 l7 7 l13 -15" fill="none" stroke="#f6a930" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg></p>
+        <ul class="acc-checks" aria-hidden="true">
+          <li><span data-l="en" lang="en">String</span><span data-l="mn" lang="mn">Утас</span></li>
+          <li><span data-l="en" lang="en">Finger</span><span data-l="mn" lang="mn">Хуруу</span></li>
+          <li><span data-l="en" lang="en">Bow</span><span data-l="mn" lang="mn">Нум</span></li>
+        </ul>
+        <p><span data-l="en" lang="en">Each song’s notes are checked against the physics of the instrument — can this string, this finger, this bow really play it?</span><span data-l="mn" lang="mn">Дуу бүрийн нотыг хуурын физиктэй тулгаж шалгадаг — энэ утас, энэ хуруу, энэ нум үүнийг үнэхээр тоглож чадах уу?</span></p>
+      </div>
+      <div class="acc-card reveal">
+        <p class="acc-num"><span data-l="en" lang="en">5&nbsp;Hz</span><span data-l="mn" lang="mn">5&nbsp;Гц</span><span class="acc-unit">&nbsp;±14¢</span></p>
+        <svg class="acc-viz" viewBox="0 0 300 64" aria-hidden="true">
+          <line x1="10" y1="32" x2="250" y2="32" stroke="#a8957d" stroke-opacity="0.35" stroke-dasharray="2 4"/><line x1="250" y1="6" x2="250" y2="58" stroke="#a8957d" stroke-opacity="0.35"/>
+          <path d="M10 32.0 L13 24.3 L16 17.9 L19 13.5 L22 12.0 L25 13.5 L28 17.9 L31 24.3 L34 32.0 L37 39.7 L40 46.1 L43 50.5 L46 52.0 L49 50.5 L52 46.1 L55 39.7 L58 32.0 L61 24.3 L64 17.9 L67 13.5 L70 12.0 L73 13.5 L76 17.9 L79 24.3 L82 32.0 L85 39.7 L88 46.1 L91 50.5 L94 52.0 L97 50.5 L100 46.1 L103 39.7 L106 32.0 L109 24.3 L112 17.9 L115 13.5 L118 12.0 L121 13.5 L124 17.9 L127 24.3 L130 32.0 L133 39.7 L136 46.1 L139 50.5 L142 52.0 L145 50.5 L148 46.1 L151 39.7 L154 32.0 L157 24.3 L160 17.9 L163 13.5 L166 12.0 L169 13.5 L172 17.9 L175 24.3 L178 32.0 L181 39.7 L184 46.1 L187 50.5 L190 52.0 L193 50.5 L196 46.1 L199 39.7 L202 32.0 L205 24.3 L208 17.9 L211 13.5 L214 12.0 L217 13.5 L220 17.9 L223 24.3 L226 32.0 L229 39.7 L232 46.1 L235 50.5 L238 52.0 L241 50.5 L244 46.1 L247 39.7 L250 32.0" fill="none" stroke="#ff9b3d" stroke-width="2.2" stroke-linejoin="round"/>
+          <g fill="#a8957d" font-size="11"><text x="258" y="16">+14¢</text><text x="258" y="56">−14¢</text><text x="10" y="62"><tspan data-l="en" lang="en">1 s</tspan><tspan data-l="mn" lang="mn">1 сек</tspan></text></g>
+        </svg>
+        <p><span data-l="en" lang="en">Vibrato tuned against a recording made at the Mongolian State Conservatory: five cycles a second.</span><span data-l="mn" lang="mn">Вибратог Монгол Улсын Консерваторид хийсэн бичлэгтэй тулгаж тааруулсан: секундэд таван удаа.</span></p>
+      </div>
+    </div>
+
+    <div class="styles reveal">
+      <div class="styles-text">
+        <h3 class="h3"><span data-l="en" lang="en">The unwritten rules, written down</span><span data-l="mn" lang="mn">Нотонд бичигддэггүй дүрэм</span></h3>
+        <p data-l="en" lang="en">Players add ornaments, vibrato and bowing that notation never shows. The app’s playing styles — researched from Mongolian, Chinese, English and Russian sources — add them for you.</p>
+        <p data-l="mn" lang="mn">Хуурчид нотонд бичигддэггүй чимэглэл, вибрато, нумын арга барилыг өөрсдөө нэмж тоглодог. Монгол, хятад, англи, орос эх сурвалжаас судалж гаргасан тоглолтын хэв маягууд үүнийг танд нэмж өгнө.</p>
+      </div>
+      <ul class="chips chips-lg">
+        <li class="chip-accent"><span data-l="en" lang="en">Khalkh stage</span><span data-l="mn" lang="mn">Халхын тайз</span></li>
+        <li><span data-l="en" lang="en">Long song · urtiin duu</span><span data-l="mn" lang="mn">Уртын дуу</span></li>
+        <li><span data-l="en" lang="en">Tatlaga</span><span data-l="mn" lang="mn">Татлага</span></li>
+        <li><span data-l="en" lang="en">Bii / ikel</span><span data-l="mn" lang="mn">Бий / икэл</span></li>
+        <li><span data-l="en" lang="en">Inner Mongolian</span><span data-l="mn" lang="mn">Өвөр Монгол</span></li>
+        <li><span data-l="en" lang="en">As written</span><span data-l="mn" lang="mn">Нотоор нь</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ Heritage ============ -->
+<section class="heritage" id="heritage" aria-labelledby="heritage-title">
+  <div class="heritage-band">
+    <div class="container heritage-inner">
+      <svg class="heritage-knot reveal" aria-hidden="true"><use href="#ulzii"/></svg>
+      <div class="heritage-copy">
+        <p class="eyebrow reveal"><span data-l="en" lang="en">Heritage</span><span data-l="mn" lang="mn">Өв соёл</span></p>
+        <h2 id="heritage-title" class="h2 reveal"><span data-l="en" lang="en">Made with respect for a living tradition.</span><span data-l="mn" lang="mn">Амьд уламжлалыг хүндэтгэн бүтээв.</span></h2>
+        <p class="heritage-statement reveal"><span data-l="en" lang="en">UNESCO lists the <em>Traditional music of the Morin Khuur</em> as Intangible Cultural Heritage of Humanity.</span><span data-l="mn" lang="mn">ЮНЕСКО <em>«Морин хуурын уламжлалт хөгжим»</em>-ийг Хүн төрөлхтний биет бус соёлын өвийн жагсаалтад бүртгэсэн.</span></p>
+        <p class="heritage-text reveal"><span data-l="en" lang="en">This simulator is a small, open tool for hearing, learning and studying that music — never a substitute for the instrument, or for a teacher.</span><span data-l="mn" lang="mn">Энэхүү симулятор бол уг хөгжмийг сонсох, сурах, судлахад туслах жижиг, нээлттэй хэрэгсэл. Жинхэнэ хуур, багшийг хэзээ ч орлохгүй.</span></p>
+        <a class="unesco-link reveal" href="https://ich.unesco.org/en/RL/traditional-music-of-the-morin-khuur-00068">
+          <span data-l="en" lang="en">Read the UNESCO entry</span><span data-l="mn" lang="mn">ЮНЕСКО-гийн танилцуулгыг унших</span>
+          <span class="unesco-host">ich.unesco.org</span>
+          <svg width="14" height="14" aria-hidden="true"><use href="#i-ext"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <ul class="heritage-points">
+      <li class="reveal">
+        <h3><span data-l="en" lang="en">Mongolian names throughout</span><span data-l="mn" lang="mn">Монгол нэр томьёо</span></h3>
+        <p><span data-l="en" lang="en">Arga and bilag, tatakh and tülekhe, tsatsal, tsokhilgo, erkhii darakh — the techniques keep their names.</span><span data-l="mn" lang="mn">Арга, билиг, татах, түлхэх, цацал, цохилго, эрхий дарах — арга барил бүр монгол нэрээрээ.</span></p>
+      </li>
+      <li class="reveal">
+        <h3><span data-l="en" lang="en">Original etudes, credited originals</span><span data-l="mn" lang="mn">Өөрийн этюд, анхны тоглолтын холбоос</span></h3>
+        <p><span data-l="en" lang="en">The songs bundled with the app are etudes written for the project. Popular pieces in the Playlist link to their original performances.</span><span data-l="mn" lang="mn">Програмд багтсан дуунууд нь төсөлд зориулж бичсэн этюдүүд. Жагсаалтын алдартай бүтээлүүд анхны тоглолтынхоо холбоостой.</span></p>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ Open source ============ -->
+<section class="section contribute" id="contribute" aria-labelledby="contribute-title">
+  <div class="container contribute-grid">
+    <div>
+      <p class="eyebrow reveal"><span data-l="en" lang="en">Open source</span><span data-l="mn" lang="mn">Нээлттэй эх код</span></p>
+      <h2 id="contribute-title" class="h2 reveal"><span data-l="en" lang="en">Free, open, and better with your help.</span><span data-l="mn" lang="mn">Үнэгүй, нээлттэй — таны оролцоогоор улам сайжирна.</span></h2>
+      <p class="lead reveal" data-l="en" lang="en">The code is MIT-licensed and public on GitHub. Musicians, teachers and researchers are especially welcome: recordings, song transcriptions and corrections all make the instrument better.</p>
+      <p class="lead reveal" data-l="mn" lang="mn">Эх код нь MIT лицензтэй, GitHub дээр бүрэн нээлттэй. Хуурч, багш, судлаачдын оролцоог онцгой хүлээж байна: бичлэг, дууны нот буулгалт, засвар бүхэн хуурыг улам сайжруулна.</p>
+      <div class="btn-row reveal">
+        <a class="btn btn-primary" href="https://github.com/dokind/morin-khuur-simulator/issues">
+          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="2.2" fill="currentColor"/></svg>
+          <span><span data-l="en" lang="en">Open an issue</span><span data-l="mn" lang="mn">Санал, засвар илгээх</span></span>
+        </a>
+        <a class="btn btn-ghost" href="https://github.com/dokind/morin-khuur-simulator">
+          <svg width="18" height="18" aria-hidden="true"><use href="#i-gh"/></svg>
+          <span><span data-l="en" lang="en">Browse the source</span><span data-l="mn" lang="mn">Эх кодыг үзэх</span></span>
+        </a>
+      </div>
+      <ul class="who reveal">
+        <li><span data-l="en" lang="en">Musicians</span><span data-l="mn" lang="mn">Хуурчид</span></li>
+        <li><span data-l="en" lang="en">Teachers</span><span data-l="mn" lang="mn">Багш нар</span></li>
+        <li><span data-l="en" lang="en">Researchers</span><span data-l="mn" lang="mn">Судлаачид</span></li>
+        <li><span data-l="en" lang="en">Developers</span><span data-l="mn" lang="mn">Хөгжүүлэгчид</span></li>
+      </ul>
+    </div>
+    <div class="terminal reveal" id="build" role="region" aria-labelledby="term-title">
+      <div class="terminal-bar"><span></span><span></span><span></span><p id="term-title"><span data-l="en" lang="en">Build from source · macOS, Linux</span><span data-l="mn" lang="mn">Эх кодоос бүтээх · macOS, Linux</span></p>
+        <button class="copy-btn" type="button" data-copy="build-code">
+          <svg class="ico-copy" width="15" height="15" aria-hidden="true"><use href="#i-copy"/></svg><svg class="ico-done" width="15" height="15" aria-hidden="true"><use href="#i-check"/></svg>
+          <span class="copy-idle"><span data-l="en" lang="en">Copy</span><span data-l="mn" lang="mn">Хуулах</span></span><span class="copy-done"><span data-l="en" lang="en">Copied</span><span data-l="mn" lang="mn">Хуулагдлаа</span></span>
+        </button>
+      </div>
+      <pre><code><span class="t-c"># <span data-l="en" lang="en">needs Node.js and Git</span><span data-l="mn" lang="mn">Node.js, Git шаардлагатай</span></span>
+<span id="build-code">git clone https://github.com/dokind/morin-khuur-simulator.git
+cd morin-khuur-simulator
+npm install
+npm run dev</span></code></pre>
+      <p class="terminal-foot"><span data-l="en" lang="en">Full instructions:</span><span data-l="mn" lang="mn">Дэлгэрэнгүй заавар:</span> <a href="https://github.com/dokind/morin-khuur-simulator#readme">README</a></p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section class="section faq" id="faq" aria-labelledby="faq-title">
+  <div class="container faq-grid">
+    <div class="faq-head">
+      <p class="eyebrow reveal"><span data-l="en" lang="en">Questions</span><span data-l="mn" lang="mn">Асуулт хариулт</span></p>
+      <h2 id="faq-title" class="h2 reveal"><span data-l="en" lang="en">Good to know</span><span data-l="mn" lang="mn">Мэдэхэд илүүдэхгүй</span></h2>
+      <p class="reveal"><span data-l="en" lang="en">Something else? Ask on <a href="https://github.com/dokind/morin-khuur-simulator/issues">GitHub</a>.</span><span data-l="mn" lang="mn">Өөр асуулт байвал <a href="https://github.com/dokind/morin-khuur-simulator/issues">GitHub</a> дээр асуугаарай.</span></p>
+    </div>
+    <div class="faq-list">
+      <details id="faq-smartscreen" class="reveal">
+        <summary><span data-l="en" lang="en">Windows says “Windows protected your PC”. What do I do?</span><span data-l="mn" lang="mn">Windows «Windows protected your PC» гэж анхааруулбал яах вэ?</span></summary>
+        <div class="faq-a">
+          <p data-l="en" lang="en">The app isn’t code-signed yet, so Windows SmartScreen warns you the first time you open it. Click <b>More info</b>, then <b>Run anyway</b>. The complete source code is public on GitHub for anyone to inspect.</p>
+          <p data-l="mn" lang="mn">Програм хараахан тоон гарын үсгээр баталгаажаагүй тул анх нээхэд Windows SmartScreen ингэж анхааруулдаг. <b>More info</b> дээр дараад <b>Run anyway</b>-г сонгоно уу. Програмын эх код бүхэлдээ GitHub дээр нээлттэй тул хүссэн хүн шалгаж болно.</p>
+        </div>
+      </details>
+      <details class="reveal">
+        <summary><span data-l="en" lang="en">Is there a Mac or Linux version?</span><span data-l="mn" lang="mn">Mac эсвэл Linux дээр ажиллах уу?</span></summary>
+        <div class="faq-a">
+          <p data-l="en" lang="en">Not yet — only Windows builds are packaged so far. On macOS or Linux you can build the app from source; the steps are in the <a href="https://github.com/dokind/morin-khuur-simulator#readme">README on GitHub</a>.</p>
+          <p data-l="mn" lang="mn">Одоогоор зөвхөн Windows-д зориулсан хувилбар гарсан. macOS, Linux дээр эх кодоос нь өөрөө бүтээж болно — алхмуудыг <a href="https://github.com/dokind/morin-khuur-simulator#readme">GitHub дээрх README</a>-ээс харна уу.</p>
+        </div>
+      </details>
+      <details class="reveal">
+        <summary><span data-l="en" lang="en">Is it really free?</span><span data-l="mn" lang="mn">Үнэхээр үнэгүй юу?</span></summary>
+        <div class="faq-a">
+          <p data-l="en" lang="en">Yes. Morin Khuur Simulator is free and open source under the <a href="https://github.com/dokind/morin-khuur-simulator/blob/master/LICENSE">MIT licence</a>.</p>
+          <p data-l="mn" lang="mn">Тийм. Морин хуурын симулятор нь <a href="https://github.com/dokind/morin-khuur-simulator/blob/master/LICENSE">MIT лицензтэй</a>, үнэгүй, нээлттэй эх кодтой.</p>
+        </div>
+      </details>
+      <details class="reveal">
+        <summary><span data-l="en" lang="en">Does it work offline?</span><span data-l="mn" lang="mn">Интернэтгүй ажиллах уу?</span></summary>
+        <div class="faq-a">
+          <p data-l="en" lang="en">Yes. Every sound is synthesised on your computer, so playing, making beats and exporting need no connection. You only need the internet to download the app and to open the Playlist’s links to original performances.</p>
+          <p data-l="mn" lang="mn">Тийм. Бүх дуу таны компьютер дээр үүсдэг тул тоглох, хэмнэл зохиох, экспортлоход интернэт хэрэггүй. Зөвхөн програмаа татах болон Playlist доторх анхны тоглолтын холбоосыг нээхэд интернэт хэрэгтэй.</p>
+        </div>
+      </details>
+      <details class="reveal">
+        <summary><span data-l="en" lang="en">Can I play it with a MIDI keyboard?</span><span data-l="mn" lang="mn">MIDI гараар тоглож болох уу?</span></summary>
+        <div class="faq-a">
+          <p data-l="en" lang="en">Yes. In the Playground you can play with the mouse, your computer keyboard or a MIDI keyboard.</p>
+          <p data-l="mn" lang="mn">Болно. Playground хэсэгт хулгана, компьютерийн гар эсвэл MIDI гараар тоглоно.</p>
+        </div>
+      </details>
+      <details class="reveal">
+        <summary><span data-l="en" lang="en">Which download should I pick?</span><span data-l="mn" lang="mn">Аль файлыг нь татах вэ?</span></summary>
+        <div class="faq-a">
+          <p data-l="en" lang="en">The 64-bit installer suits most PCs. Choose the ARM installer for Windows on ARM devices, or the portable version to run the app without installing it.</p>
+          <p data-l="mn" lang="mn">Ихэнх компьютерт 64 битийн суулгагч тохирно. ARM процессортой Windows төхөөрөмжид ARM суулгагчийг, суулгалгүй ажиллуулах бол зөөврийн (Portable) хувилбарыг сонгоорой.</p>
+        </div>
+      </details>
+      <details class="reveal">
+        <summary><span data-l="en" lang="en">Are the sounds on this page real recordings?</span><span data-l="mn" lang="mn">Энэ хуудсан дээрх дуунууд жинхэнэ бичлэг үү?</span></summary>
+        <div class="faq-a">
+          <p data-l="en" lang="en">No. Every clip was rendered by the app itself from the project’s own original etudes.</p>
+          <p data-l="mn" lang="mn">Үгүй. Бүгдийг програм өөрөө, төслийн өөрийн этюдүүдээс нийлэгжүүлсэн.</p>
+        </div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ============ Download ============ -->
+<section class="section download" id="download" aria-labelledby="download-title">
+  <div class="download-glow" aria-hidden="true"></div>
+  <div class="container">
+    <header class="section-head center">
+      <img class="download-logo reveal" src="assets/logo.svg" alt="" width="88" height="88" loading="lazy">
+      <h2 id="download-title" class="h2 reveal"><span data-l="en" lang="en">Pick up the bow.</span><span data-l="mn" lang="mn">Хуураа татъя.</span></h2>
+      <p class="lead reveal"><span data-l="en" lang="en">Free for Windows 10 and 11 · version <span data-version>0.1.0</span></span><span data-l="mn" lang="mn">Windows 10, 11-д үнэгүй · хувилбар <span data-version>0.1.0</span></span></p>
+    </header>
+
+    <div class="dl-cards">
+      <a class="dl-card reveal" data-dl="x64" data-card="x64" href="https://github.com/dokind/morin-khuur-simulator/releases/download/v0.1.0/MorinKhuurSimulator-Setup-0.1.0-x64.exe">
+        <span class="dl-badge"><span data-l="en" lang="en">Recommended</span><span data-l="mn" lang="mn">Танд тохирох</span></span>
+        <span class="dl-card-title"><span data-l="en" lang="en">Installer · 64-bit</span><span data-l="mn" lang="mn">Суулгагч · 64 бит</span></span>
+        <span class="dl-card-sub"><span data-l="en" lang="en">For most PCs</span><span data-l="mn" lang="mn">Ихэнх компьютерт</span></span>
+        <span class="dl-card-foot"><span class="dl-size"><span data-size="x64">107</span>&nbsp;<span data-l="en" lang="en">MB</span><span data-l="mn" lang="mn">МБ</span></span><span class="dl-go"><svg width="18" height="18" aria-hidden="true"><use href="#i-down"/></svg><span data-l="en" lang="en">Download</span><span data-l="mn" lang="mn">Татах</span></span></span>
+      </a>
+      <a class="dl-card reveal" data-dl="arm64" data-card="arm64" href="https://github.com/dokind/morin-khuur-simulator/releases/download/v0.1.0/MorinKhuurSimulator-Setup-0.1.0-arm64.exe">
+        <span class="dl-badge"><span data-l="en" lang="en">Recommended</span><span data-l="mn" lang="mn">Танд тохирох</span></span>
+        <span class="dl-card-title"><span data-l="en" lang="en">Installer · ARM</span><span data-l="mn" lang="mn">Суулгагч · ARM</span></span>
+        <span class="dl-card-sub"><span data-l="en" lang="en">For Windows on ARM devices</span><span data-l="mn" lang="mn">ARM процессортой Windows төхөөрөмжид</span></span>
+        <span class="dl-card-foot"><span class="dl-size"><span data-size="arm64">101</span>&nbsp;<span data-l="en" lang="en">MB</span><span data-l="mn" lang="mn">МБ</span></span><span class="dl-go"><svg width="18" height="18" aria-hidden="true"><use href="#i-down"/></svg><span data-l="en" lang="en">Download</span><span data-l="mn" lang="mn">Татах</span></span></span>
+      </a>
+      <a class="dl-card reveal" data-dl="portable" data-card="portable" href="https://github.com/dokind/morin-khuur-simulator/releases/download/v0.1.0/MorinKhuurSimulator-Portable-0.1.0.exe">
+        <span class="dl-badge"><span data-l="en" lang="en">Recommended</span><span data-l="mn" lang="mn">Танд тохирох</span></span>
+        <span class="dl-card-title"><span data-l="en" lang="en">Portable</span><span data-l="mn" lang="mn">Зөөврийн хувилбар</span></span>
+        <span class="dl-card-sub"><span data-l="en" lang="en">Runs without installing</span><span data-l="mn" lang="mn">Суулгахгүйгээр ажиллана</span></span>
+        <span class="dl-card-foot"><span class="dl-size"><span data-size="portable">106</span>&nbsp;<span data-l="en" lang="en">MB</span><span data-l="mn" lang="mn">МБ</span></span><span class="dl-go"><svg width="18" height="18" aria-hidden="true"><use href="#i-down"/></svg><span data-l="en" lang="en">Download</span><span data-l="mn" lang="mn">Татах</span></span></span>
+      </a>
+    </div>
+    <p class="dl-all reveal"><a href="https://github.com/dokind/morin-khuur-simulator/releases"><span data-l="en" lang="en">All releases on GitHub</span><span data-l="mn" lang="mn">GitHub дээрх бүх хувилбар</span></a></p>
+
+    <div class="dl-bottom">
+      <div class="first-run reveal" id="first-run">
+        <h3 class="h3"><span data-l="en" lang="en">First launch: Windows SmartScreen</span><span data-l="mn" lang="mn">Анх нээхэд: Windows SmartScreen</span></h3>
+        <p><span data-l="en" lang="en">The app isn’t code-signed yet, so Windows shows a warning the first time you run it.</span><span data-l="mn" lang="mn">Програм хараахан тоон гарын үсэггүй тул анх ажиллуулахад Windows анхааруулга харуулна.</span></p>
+        <ol class="steps">
+          <li>
+            <span class="step-n" aria-hidden="true">1</span>
+            <span class="step-viz step-viz-1" aria-hidden="true"><b>Windows protected your PC</b><u>More info</u></span>
+            <span><span data-l="en" lang="en">A blue window says <q>Windows protected your PC</q>.</span><span data-l="mn" lang="mn">Цэнхэр цонхонд <q>Windows protected your PC</q> гэж гарна.</span></span>
+          </li>
+          <li>
+            <span class="step-n" aria-hidden="true">2</span>
+            <span class="step-viz step-viz-2" aria-hidden="true"><u>More info</u></span>
+            <span><span data-l="en" lang="en">Click <b>More info</b>.</span><span data-l="mn" lang="mn"><b>More info</b> дээр дарна.</span></span>
+          </li>
+          <li>
+            <span class="step-n" aria-hidden="true">3</span>
+            <span class="step-viz step-viz-3" aria-hidden="true"><i>Run anyway</i></span>
+            <span><span data-l="en" lang="en">Click <b>Run anyway</b>.</span><span data-l="mn" lang="mn"><b>Run anyway</b> дээр дарна.</span></span>
+          </li>
+        </ol>
+      </div>
+      <div class="dl-alt reveal">
+        <h3 class="h3"><span data-l="en" lang="en">macOS or Linux?</span><span data-l="mn" lang="mn">macOS эсвэл Linux уу?</span></h3>
+        <p><span data-l="en" lang="en">Not packaged yet. You can build it from source today, and star or watch the repository to follow new releases.</span><span data-l="mn" lang="mn">Бэлэн хувилбар хараахан гараагүй. Эх кодоос нь одоо өөрөө бүтээж болно; шинэ хувилбарыг дагахын тулд GitHub дээр од дарж, ажиглаарай.</span></p>
+        <p class="dl-alt-links"><a href="#build"><span data-l="en" lang="en">Build from source</span><span data-l="mn" lang="mn">Эх кодоос бүтээх</span></a> <a href="https://github.com/dokind/morin-khuur-simulator"><span data-l="en" lang="en">Star on GitHub</span><span data-l="mn" lang="mn">GitHub дээр од дарах</span></a></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ============ Footer ============ -->
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div class="footer-brand">
+      <img src="assets/logo.svg" alt="" width="40" height="40" loading="lazy">
+      <div>
+        <p class="footer-name"><span data-l="en" lang="en">Morin Khuur Simulator</span><span data-l="mn" lang="mn">Морин хуурын симулятор</span></p>
+        <p class="footer-small">v<span data-version>0.1.0</span> · <span data-l="en" lang="en">Open source under the <a href="https://github.com/dokind/morin-khuur-simulator/blob/master/LICENSE">MIT licence</a></span><span data-l="mn" lang="mn">Нээлттэй эх код · <a href="https://github.com/dokind/morin-khuur-simulator/blob/master/LICENSE">MIT лиценз</a></span></p>
+      </div>
+    </div>
+    <nav class="footer-links" aria-label="Footer" data-label-en="Footer" data-label-mn="Хөл хэсэг">
+      <a href="https://github.com/dokind/morin-khuur-simulator">GitHub</a>
+      <a href="https://github.com/dokind/morin-khuur-simulator/releases"><span data-l="en" lang="en">Releases</span><span data-l="mn" lang="mn">Хувилбарууд</span></a>
+      <a href="https://github.com/dokind/morin-khuur-simulator/issues"><span data-l="en" lang="en">Issues &amp; ideas</span><span data-l="mn" lang="mn">Санал хүсэлт</span></a>
+      <a href="https://ich.unesco.org/en/RL/traditional-music-of-the-morin-khuur-00068"><span data-l="en" lang="en">UNESCO: Traditional music of the Morin Khuur</span><span data-l="mn" lang="mn">ЮНЕСКО: Морин хуурын уламжлалт хөгжим</span></a>
+    </nav>
+    <p class="footer-fine"><svg class="footer-knot" aria-hidden="true"><use href="#ulzii"/></svg><span data-l="en" lang="en">Audio on this page is synthesised by the app. Not affiliated with UNESCO.</span><span data-l="mn" lang="mn">Энэ хуудсан дээрх дууг програм нийлэгжүүлсэн. ЮНЕСКО-той албан ёсны холбоогүй.</span></p>
+  </div>
+</footer>
+
+<!-- now playing, shown when a playing clip scrolls out of view -->
+<div class="mini" id="mini" role="region" aria-label="Now playing" data-label-en="Now playing" data-label-mn="Одоо тоглож буй" hidden>
+  <button class="mini-play" type="button" aria-label="Pause">
+    <svg class="i-play" width="18" height="18" aria-hidden="true"><use href="#i-play"/></svg>
+    <svg class="i-pause" width="18" height="18" aria-hidden="true"><use href="#i-pause"/></svg>
+  </button>
+  <div class="mini-text"><span class="mini-title"></span><span class="mini-time"></span></div>
+  <div class="mini-bar" aria-hidden="true"><span></span></div>
+  <button class="mini-close" type="button" aria-label="Stop" data-label-en="Stop" data-label-mn="Зогсоох">
+    <svg width="18" height="18" aria-hidden="true"><use href="#i-close"/></svg>
+  </button>
+</div>
+<p class="sr-only" id="live" aria-live="polite"></p>
+
+<dialog class="lightbox" id="lightbox" aria-label="Screenshot" data-label-en="Screenshot" data-label-mn="Дэлгэцийн зураг">
+  <button class="lightbox-close icon-btn" type="button" aria-label="Close" data-label-en="Close" data-label-mn="Хаах">
+    <svg width="22" height="22" aria-hidden="true"><use href="#i-close"/></svg>
+  </button>
+</dialog>
+</body>
+</html>

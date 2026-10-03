@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://khuur.vercel.app/sitemap.xml

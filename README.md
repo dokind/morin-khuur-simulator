@@ -7,6 +7,8 @@
 [![UNESCO Heritage](https://img.shields.io/badge/UNESCO-Intangible%20Cultural%20Heritage-blue.svg)](https://ich.unesco.org/en/RL/traditional-music-of-the-morin-khuur-00068)
 [![Status: Desktop app in development](https://img.shields.io/badge/Status-Desktop%20app%20v0.1-teal.svg)](#-download--install-windows)
 
+**🌐 Website & download: [khuur.vercel.app](https://khuur.vercel.app)**
+
 > **Our Mission:** To preserve, digitize, and share the authentic sound, playing techniques, and cultural heritage of the **Mongolian Morin Khuur (Horsehead Fiddle)** with the world through a free, open-source online instrument simulator, beat maker, and automated song learning engine.
 
 ---
@@ -51,7 +53,7 @@ Incorporating curriculum insights and authentic terminology from **UUGUUL** ([uu
 
 ## 💻 Download & Install (Windows)
 
-The simulator is a desktop app built with Electron. Download the latest Windows build from the **[Releases page](https://github.com/dokind/morin-khuur-simulator/releases)** (or build it yourself with `npm run dist:win`, see *Development* below):
+The simulator is a desktop app built with Electron. Download it from **[khuur.vercel.app](https://khuur.vercel.app)** or the **[Releases page](https://github.com/dokind/morin-khuur-simulator/releases)** (or build it yourself with `npm run dist:win`, see *Development* below):
 
 | File | What it is |
 |---|---|
@@ -84,6 +86,8 @@ npm test             # unit tests (domain model, notation, verification, importe
 npm run lint
 npm run dist:win     # build the Windows installer + portable exe into dist/
 ```
+
+The landing page lives in [`site/`](./site/) (static HTML/CSS/JS, no build step) and is deployed to Vercel from that folder (`cd site && vercel deploy --prod`).
 
 `npm run dev:web` serves the interface in a normal browser at http://localhost:5173 for quick UI work. Architecture notes for contributors live in [CLAUDE.md](./CLAUDE.md).
 

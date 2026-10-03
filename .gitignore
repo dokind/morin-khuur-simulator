@@ -11,3 +11,4 @@ Thumbs.db
 references/
 local-songs/
 *.tsbuildinfo
+site/.vercel

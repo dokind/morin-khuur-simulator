@@ -24,6 +24,11 @@ export default defineConfig(
     languageOptions: { globals: globals.node }
   },
   {
+    // The landing page (static, deployed to Vercel from site/).
+    files: ['site/**/*.js'],
+    languageOptions: { globals: globals.browser }
+  },
+  {
     files: ['**/*.worklet.js'],
     languageOptions: { globals: { ...globals.audioWorklet } }
   }
