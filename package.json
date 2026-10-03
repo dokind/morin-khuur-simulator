@@ -6,6 +6,14 @@
   "main": "./out/main/index.js",
   "author": "Morin Khuur Simulator contributors",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dokind/morin-khuur-simulator.git"
+  },
+  "homepage": "https://github.com/dokind/morin-khuur-simulator#readme",
+  "bugs": {
+    "url": "https://github.com/dokind/morin-khuur-simulator/issues"
+  },
   "private": true,
   "scripts": {
     "dev": "electron-vite dev",

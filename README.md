@@ -1,6 +1,8 @@
 # Morin Khuur Simulator & Open-Source Cultural Heritage Project
 *Морин хуурын онлайн симулятор ба дуу үйлдвэрлэлийн нээлттэй төсөл*
 
+[![CI](https://github.com/dokind/morin-khuur-simulator/actions/workflows/ci.yml/badge.svg)](https://github.com/dokind/morin-khuur-simulator/actions/workflows/ci.yml)
+[![Latest release](https://img.shields.io/github/v/release/dokind/morin-khuur-simulator?include_prereleases&label=download)](https://github.com/dokind/morin-khuur-simulator/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![UNESCO Heritage](https://img.shields.io/badge/UNESCO-Intangible%20Cultural%20Heritage-blue.svg)](https://ich.unesco.org/en/RL/traditional-music-of-the-morin-khuur-00068)
 [![Status: Desktop app in development](https://img.shields.io/badge/Status-Desktop%20app%20v0.1-teal.svg)](#-download--install-windows)
@@ -49,7 +51,7 @@ Incorporating curriculum insights and authentic terminology from **UUGUUL** ([uu
 
 ## 💻 Download & Install (Windows)
 
-The simulator is a desktop app built with Electron. Two Windows builds are produced by `npm run dist:win` (see *Development* below) in the `dist/` folder:
+The simulator is a desktop app built with Electron. Download the latest Windows build from the **[Releases page](https://github.com/dokind/morin-khuur-simulator/releases)** (or build it yourself with `npm run dist:win`, see *Development* below):
 
 | File | What it is |
 |---|---|
@@ -74,6 +76,8 @@ All sound is synthesised live from a physical model — a bowed horsehair-string
 Requires [Node.js](https://nodejs.org/) 22.12+ (24 recommended) and Git.
 
 ```bash
+git clone https://github.com/dokind/morin-khuur-simulator.git
+cd morin-khuur-simulator
 npm install          # first run also downloads Electron
 npm run dev          # start the app with hot reload
 npm test             # unit tests (domain model, notation, verification, importers)

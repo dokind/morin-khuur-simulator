@@ -57,7 +57,7 @@ To ensure this simulator is a true pedagogical tool and not just a generic synth
 
 ## 3. UI Design Concepts & Visual References
 
-UI mockups have been generated and saved to the project's [design_references/](file:///C:/Users/ADMIN/projects/Morinkhuursimulator/design_references) folder:
+UI mockups have been generated and saved to the project's [design_references/](./design_references/) folder:
 
 ### 3.1 Beat Maker & Producer Studio (`morin_khuur_beatmaker_ui.jpg`)
 * **4x4 MPC-Style Performance Grid**:

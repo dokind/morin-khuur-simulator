@@ -1,6 +1,6 @@
 # The game bridge — how a song made here becomes a Malchin asset
 
-Malchin (the steppe life-sim in `C:\Users\ADMIN\projects\malchingameconcept`) will one day use music
+Malchin (the developer's steppe life-sim game project, kept in a separate repository) will one day use music
 made in this simulator. This page is the route a song takes from here into the game: what file
 leaves, at what rate and level, under what name, with what record of where it came from, and in
 what words it is described. Written 2026-10-02 (Malchin nightly run 6, K2). **It is a proposal
