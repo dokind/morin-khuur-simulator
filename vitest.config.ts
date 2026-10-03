@@ -10,6 +10,9 @@ export default defineConfig({
   },
   test: {
     environment: 'node',
-    include: ['src/**/*.test.ts']
+    include: ['src/**/*.test.ts'],
+    // The DSP tests render seconds of audio sample by sample through the bowed-string worklet:
+    // ~2.5 s locally for the slowest, about three times that on a hosted Windows CI runner.
+    testTimeout: 30_000
   }
 })
